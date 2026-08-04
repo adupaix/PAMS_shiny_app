@@ -48,5 +48,3 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# Shiny app data folder
-data/
