@@ -15,12 +15,16 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(ggVennDiagram)
+library(devtools)
 
 if (!'SLRtools' %in% installed.packages()){
-  library(devtools)
   devtools::install_github('adupaix/SLRtools')
 }
 library(SLRtools)
+if (!'ggradar' %in% installed.packages()){
+  devtools::install_github('ricardo-bion/ggradar')
+}
+library(ggradar)
 
 # source small functions
 source('R/utils.R')
@@ -32,6 +36,9 @@ sysrev_key <- Sys.getenv('SYSREV_KEY')
 eez_path <- file.path(data_dir, 'EEZ_land_union_v4_202410')
 lands_path <- file.path(data_dir, 'OSM_lands')
 regions_path <- file.path(data_dir, 'French_regions')
+
+# variables definition
+n_to_code <- 757
 
 # source file that loads and formats sysrev data
 source('R/load_sysrev_data.R')
