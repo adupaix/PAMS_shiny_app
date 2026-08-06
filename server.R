@@ -447,7 +447,7 @@ server <- function(input, output) {
     ggradar::ggradar(radar_data,
                      group.point.size = 1,
                      group.line.width = 1,
-                     axis.label.size = 2,
+                     axis.label.size = 3,
                      background.circle.colour = 'white',
                      gridline.mid.colour = "grey")
   })
