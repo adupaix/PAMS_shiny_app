@@ -27,7 +27,7 @@ ui <- dashboardPage(
       # Meta-data, results at the scale of the articles
       menuItem("Article-level variables", tabName = "tab_articles", icon = icon("chart-pie")),
       menuItem("Location and ecosystems", tabName = "tab_ecosystem", icon = icon("map")),
-      menuItem("Other case-study-level variables", tabName = "tab_case_study", icon = icon("chart-bar")),
+      menuItem("Other case-study-level\nvariables", tabName = "tab_case_study", icon = icon("chart-bar")),
       # menuItem("Participation results", tabName = "tab_participants", icon = icon("chart-bar"))
       id = "tabs"
     ),
