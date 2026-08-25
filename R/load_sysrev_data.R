@@ -48,14 +48,17 @@ if(reload_data ||
     
 }
 
+# read formatted data
 user_answers <- utils::read.csv(file.path(data_dir,
                                           paste0(Sys.Date(), '-user_answers.csv'))) |>
   dplyr::mutate(include_code = as.logical(include_code))
 
 # get simplified df with per article information
+# keep one row per paper
 answers_per_paper <- user_answers |>
   dplyr::select(project_id:challenges) |>
   dplyr::distinct()
+# calculate basic screening information
 excluded_papers <- answers_per_paper |>
   dplyr::filter(!include_code)
 included_papers <- answers_per_paper |>
@@ -72,7 +75,7 @@ exclusion_reasons <- excluded_papers |>
   dplyr::arrange(n)
 
 
-# correct impact/lever/challenges
+# Automatic correction: impact/lever/challenges
 included_papers$impact_evaluation[
   which(is.na(included_papers$impact_evaluation))] <- 'No'
 included_papers$levers[
@@ -85,7 +88,7 @@ included_papers$challenges[
 included_answers <- user_answers |>
   dplyr::filter(include_code)
 
-# correction on habitats
+# Automatic correction: habitats
 included_answers <- included_answers |>
   dplyr::mutate(vulnerable_habitat = dplyr::case_when(
     grepl('Land', ecosystem_main) &
@@ -104,9 +107,27 @@ included_answers <- included_answers |>
       is.na(vulnerable_habitat) ~ 'Other continental shelf ecosystems',
     
     T ~ vulnerable_habitat
-  ))
+  )) |>
+  # Automatic correction : when inclusivity is empty, put None
+  dplyr::mutate(participant_inclusivity = dplyr::case_when(
+    is.na(participant_inclusivity) ~ 'None',
+    T ~ participant_inclusivity
+  )) |>
+  # automatic correction when involvement_iteration is NA put FALSE
+  dplyr::mutate(
+    involvement_iteration = ifelse(is.na(involvement_iteration),
+                                   FALSE,
+                                   involvement_iteration)
+  )
 
-## Data for the maps
+# one line per case study (do not consider participant information in this df)
+case_study_data <- included_answers |>
+  dplyr::distinct(article_id, user_id, case_study_index, .keep_all = T)
+
+# participant level data
+participant_data <- included_answers
+
+# Data for the maps
 location_list <- lapply(
   strsplit(included_answers$study_site_location, ';'),
   stringr::str_trim

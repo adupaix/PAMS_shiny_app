@@ -7,6 +7,14 @@
 #'
 #'#***************************************************************************
 
+# small CSS snippet for the progress bar style
+progress_css <- "
+.progress-wrap { display: inline-block; vertical-align: middle; margin-left: 12px; width: 200px; }
+.progress-bg { background: #e6e6e6; border-radius: 4px; width: 100%; height: 14px; overflow: hidden; }
+.progress-fill { height: 100%; width: 100%; transition: background 300ms ease-in-out; }
+.progress-label { display: inline-block; vertical-align: middle; margin-right: 10px; font-weight: 600; }
+"
+
 ui <- dashboardPage(
   title = 'PAMS coding results',
   
@@ -17,6 +25,11 @@ ui <- dashboardPage(
                style = "margin-right:10px;margin-left:0px"),
       "PAMS coding",
       style = "white-space: nowrap; overflow: visible; font-size:20px"
+    ),
+    # put the progress UI into the header bar (right side)
+    tags$li(class = "dropdown",
+            style = "padding: 8px; margin-right: 20px;",
+            uiOutput("top_progress_ui")
     )
   ),
   sidebar = dashboardSidebar(
@@ -27,8 +40,8 @@ ui <- dashboardPage(
       # Meta-data, results at the scale of the articles
       menuItem("Article-level variables", tabName = "tab_articles", icon = icon("chart-pie")),
       menuItem("Location and ecosystems", tabName = "tab_ecosystem", icon = icon("map")),
-      menuItem("Other case-study-level variables", tabName = "tab_case_study", icon = icon("chart-bar")),
-      # menuItem("Participation results", tabName = "tab_participants", icon = icon("chart-bar"))
+      menuItem("Case-study-level variables", tabName = "tab_case_study", icon = icon("chart-bar")),
+      menuItem("Participants-level variables", tabName = "tab_participants", icon = icon("users")),
       id = "tabs"
     ),
     
@@ -42,15 +55,20 @@ ui <- dashboardPage(
     
     p("Number of coded articles: ",
       textOutput("n_coded", inline = T)),
-    hr(),
     p("Number of included articles: ",
       textOutput("n_included", inline = T)),
+    p("Number of articles to code: ",
+      textOutput("n_to_code", inline = T)),
+    hr(),
     
     width = 300
     
   ),
   
   body = dashboardBody(
+    
+    # CSS for the progress bar
+    tags$head(tags$style(HTML(progress_css))),
     tabItems(
       
       # ---- TAB 1: Articles level ----
@@ -171,14 +189,14 @@ ui <- dashboardPage(
           column(
             width = 12,
             div(
-              box(title = "Maps of study site location in the Hexagone",
+              box(title = "Map of study site location in the Hexagone",
                   plotOutput("map_hexagone"),
                   width = 12)
             )
           )
         )
       ),
-      # Third tab ----
+      # ---- TAB 3: Case study level variables ----
       tabItem(
         tabName = 'tab_case_study',
         ## First row ----
@@ -189,6 +207,63 @@ ui <- dashboardPage(
               box(title = "Drivers of change",
                   plotOutput('bar_drivers'),
                   width = 12)
+            )
+          ),
+          column(
+            width = 6,
+            div(
+              box(title = "Activities and uses",
+                  plotOutput('bar_activities'),
+                  width = 12)
+            )
+          )
+        )
+      ),
+      # ---- TAB 4: Participant type level variables ----
+      tabItem(
+        tabName = 'tab_participants',
+        ## First row ----
+        fluidRow(
+          column(
+            width = 6,
+            div(
+              box(title = 'Participant type',
+                  plotOutput('bar_part_type'),
+                  width = 12
+              )
+            )
+          ),
+          column(
+            width = 6,
+            div(
+              box(title = 'Involvement iteration per participant type',
+                  plotOutput('bar_iter_part_type'),
+                  width = 12
+              )
+            )
+          )
+        ),
+        ## Second row ----
+        fluidRow(
+          column(
+            width = 8,
+            div(
+              box(title = 'Research step and involvement level',
+                  plotOutput('bar_step_involvement'),
+                  width = 12
+              )
+            )
+          ),
+          column(
+            width = 4,
+            div(
+              box(title = 'Participant inclusivity',
+                  p("Do the authors provide gender, ethnic, age or
+                    nationality information on participants or any
+                    information of inclusivity of participants?"),
+                  plotOutput('radar_inclusivity'),
+                  width = 12
+              )
             )
           )
         )
