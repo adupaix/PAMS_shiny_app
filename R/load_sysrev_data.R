@@ -112,7 +112,13 @@ included_answers <- included_answers |>
   dplyr::mutate(participant_inclusivity = dplyr::case_when(
     is.na(participant_inclusivity) ~ 'None',
     T ~ participant_inclusivity
-  ))
+  )) |>
+  # automatic correction when involvement_iteration is NA put FALSE
+  dplyr::mutate(
+    involvement_iteration = ifelse(is.na(involvement_iteration),
+                                   FALSE,
+                                   involvement_iteration)
+  )
 
 # one line per case study (do not consider participant information in this df)
 case_study_data <- included_answers |>

@@ -459,7 +459,10 @@ server <- function(input, output) {
     part_type_list <- lapply(strsplit(participant_data$participant_type, ';'),
                              stringr::str_trim)
     part_type_categories <- data.frame(category = sort(c(
-      "General public", "Art & culture sector", "Education sector", "Fisheries sector", "Aquaculture sector", "Energy sector", "Other industries", "Public authorities, decision makers and managers", "NGOs", "Science & research", "Others", "Unclear"
+      "General public", "Art & culture sector", "Education sector",
+      "Fisheries sector", "Aquaculture sector", "Energy sector",
+      "Other industries", "Public authorities, decision makers and managers",
+      "NGOs", "Science & research", "Others", "Unclear"
     ))) |>
       dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~
                                                'Other',
@@ -523,6 +526,54 @@ server <- function(input, output) {
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'))
+  })
+  
+  # Barplot involvement iteration per participant type
+  output$bar_iter_part_type <- renderPlot({
+    input$reload_data
+    
+    part_type_list <- lapply(strsplit(participant_data$participant_type, ';'),
+                             stringr::str_trim)
+    part_type_categories <- data.frame(category = sort(c(
+      "General public", "Art & culture sector", "Education sector",
+      "Fisheries sector", "Aquaculture sector", "Energy sector",
+      "Other industries", "Public authorities, decision makers and managers",
+      "NGOs", "Science & research", "Others", "Unclear"
+    ))) |>
+      dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~
+                                               'Other',
+                                             T ~ 'Known'))
+    
+    part_type_iter_df <- data.frame(
+      part_type = part_type_categories$category
+    ) |>
+      dplyr::mutate(
+        nb_part_type = sapply(part_type_categories$category,
+                              function(x) length(grep(x, part_type_list, fixed = T))),
+        nb_iterative = sapply(part_type_categories$category,
+                              function(x) sum(grepl(x, part_type_list, fixed = T) &
+                                                participant_data$involvement_iteration)),
+        pct_iterative = dplyr::if_else(nb_part_type == 0,
+                                       0,
+                                       100 * nb_iterative / nb_part_type)
+      )
+    
+    ggplot2::ggplot(part_type_iter_df,
+                    ggplot2::aes(x = part_type,
+                                 y = pct_iterative)) +
+      ggplot2::geom_bar(stat = 'identity', fill = 'grey') +
+      ggplot2::coord_flip() +
+      ggplot2::scale_x_discrete(limits = part_type_categories$category[
+        length(part_type_categories$category):1
+      ]) +
+      ggplot2::xlab('Participant type') +
+      ggplot2::ylab('% of iterative involvement') +
+      ggplot2::theme(panel.background = ggplot2::element_rect(
+        fill = 'white', color = 'black'),
+        panel.grid.major = ggplot2::element_line(color = 'grey'),
+        legend.position = 'none')
+    
+    
   })
   
 }

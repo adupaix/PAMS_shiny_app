@@ -225,22 +225,19 @@ ui <- dashboardPage(
         ## First row ----
         fluidRow(
           column(
-            width = 4,
+            width = 6,
             div(
-              box(title = 'Participant inclusivity',
-                  p("Do the authors provide gender, ethnic, age or
-                    nationality information on participants or any
-                    information of inclusivity of participants?"),
-                  plotOutput('radar_inclusivity'),
+              box(title = 'Participant type',
+                  plotOutput('bar_part_type'),
                   width = 12
               )
             )
           ),
           column(
-            width = 8,
+            width = 6,
             div(
-              box(title = 'Participant type',
-                  plotOutput('bar_part_type'),
+              box(title = 'Involvement iteration per participant type',
+                  plotOutput('bar_iter_part_type'),
                   width = 12
               )
             )
@@ -253,6 +250,18 @@ ui <- dashboardPage(
             div(
               box(title = 'Research step and involvement level',
                   plotOutput('bar_step_involvement'),
+                  width = 12
+              )
+            )
+          ),
+          column(
+            width = 4,
+            div(
+              box(title = 'Participant inclusivity',
+                  p("Do the authors provide gender, ethnic, age or
+                    nationality information on participants or any
+                    information of inclusivity of participants?"),
+                  plotOutput('radar_inclusivity'),
                   width = 12
               )
             )
