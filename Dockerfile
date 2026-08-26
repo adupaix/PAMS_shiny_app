@@ -1,19 +1,4 @@
-# =============================================================================
-# File   : Dockerfile
-# Author : Amaël Dupaix with Claude Sonnet 5
-# Date   : 2026-08-26
-# Purpose: Containerise PAMS_shiny_app for Hugging Face Spaces (Docker SDK),
-#          including SLRtools' full dependency tree per its DESCRIPTION file.
-# Inputs : Full repo contents (R/, data/, www/, global.R, server.R, ui.R)
-# Outputs: Running Shiny app on port 7860
-# Notes  : - SYSREV_KEY is injected via HF Space "Secrets", never baked in.
-#          - libglpk-dev is required for igraph — omitting it produces a
-#            silent build success but a runtime dyn.load() failure
-#            (confirmed as a real HF Spaces failure mode for igraph).
-#          - arrow's install.packages() step downloads a prebuilt libarrow
-#            binary at build time; this needs network access during the HF
-#            build and can add a few minutes — this is expected, not a bug.
-# =============================================================================
+# syntax=docker/dockerfile:1
 
 FROM rocker/geospatial:4.4.1
 # NOTE: rocker/geospatial (built on rocker/verse) ships precompiled sf,
@@ -50,9 +35,12 @@ RUN R -e "install.packages(c( \
 # NOTE: built into the image, not re-installed at runtime as global.R's
 # `if (!'X' %in% installed.packages())` check would otherwise trigger.
 RUN R -e "devtools::install_github('yutannihilation/ggsflabel')" \
-    && R -e "devtools::install_github('FRBCesab/rbibtools')" \
-    && R -e "devtools::install_github('adupaix/SLRtools')" \
-    && R -e "devtools::install_github('ricardo-bion/ggradar')"
+ && R -e "devtools::install_github('FRBCesab/rbibtools')" \
+ && R -e "devtools::install_github('ricardo-bion/ggradar')"
+
+RUN --mount=type=secret,id=PAT_GITHUB,env=PAT_GITHUB \
+    R -e "devtools::install_github('adupaix/SLRtools')"
+
 
 # ── 5. Copy app code (secrets are NOT copied — see Space "Secrets" setting) ─
 WORKDIR /srv/shiny-app
