@@ -26,7 +26,7 @@ jobs:
           push: false
           tags: pams-shiny:test
           secrets: |
-            GITHUB_PAT=$PAT_GITHUB
+            GITHUB_PAT="${{ secrets.PAT_GITHUB }}" \
       - name: Run container
         run: |
           docker run -d \
