@@ -50,7 +50,6 @@ COPY . .
 # NOTE: HF Spaces requires the container to listen on 0.0.0.0:7860, not
 # Shiny's local default of 127.0.0.1:3838.
 EXPOSE 7860
-USER shiny
 
 # ── 7. Launch ─────────────────────────────────────────────────────────────
 CMD ["R", "-e", "shiny::runApp(appDir = '/srv/shiny-app', host = '0.0.0.0', port = 7860)"]
