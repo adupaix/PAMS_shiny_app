@@ -1,15 +1,12 @@
-name: Docker Image CI
+name: Build and test Docker image
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +20,12 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          push: false
+          load: true
           tags: pams-shiny:test
           secrets: |
-            GITHUB_PAT="${{ secrets.PAT_GITHUB }}" \
-      - name: Run container
+            PAT_GITHUB=${{ secrets.PAT_GITHUB }}
+
+      - name: Run Shiny app
         run: |
           docker run -d \
             --name pams-shiny \
@@ -35,8 +33,7 @@ jobs:
             -e SYSREV_KEY="${{ secrets.SYSREV_KEY }}" \
             pams-shiny:test
 
-      - name: Wait for Shiny
+      - name: Check Shiny app
         run: |
           sleep 10
           curl --fail http://localhost:7860
-            
