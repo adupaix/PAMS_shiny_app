@@ -1,18 +1,39 @@
-name: Docker Image CI
+name: Build and test Docker image
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: pams-shiny:test
+          secrets: |
+            PAT_GITHUB=${{ secrets.PAT_GITHUB }}
+
+      - name: Run Shiny app
+        run: |
+          docker run -d \
+            --name pams-shiny \
+            -p 7860:7860 \
+            -e SYSREV_KEY="${{ secrets.SYSREV_KEY }}" \
+            pams-shiny:test
+
+      - name: Check Shiny app
+        run: |
+          sleep 10
+          curl --fail http://localhost:7860
