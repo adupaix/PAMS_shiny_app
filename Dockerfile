@@ -38,7 +38,7 @@ RUN R -e "devtools::install_github('yutannihilation/ggsflabel')" \
  && R -e "devtools::install_github('FRBCesab/rbibtools')" \
  && R -e "devtools::install_github('ricardo-bion/ggradar')"
 
-RUN --mount=type=secret,id=PAT_GITHUB,env=PAT_GITHUB \
+RUN --mount=type=secret,id=PAT_GITHUB,env=GITHUB_PAT \
     R -e "devtools::install_github('adupaix/SLRtools')"
 
 
