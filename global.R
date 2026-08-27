@@ -16,6 +16,7 @@ library(tidyr)
 library(ggplot2)
 library(ggVennDiagram)
 library(devtools)
+library(shinyWidgets)
 
 if (!'SLRtools' %in% installed.packages()){
   devtools::install_github("yutannihilation/ggsflabel")

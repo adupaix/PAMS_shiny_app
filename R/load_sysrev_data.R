@@ -143,3 +143,14 @@ count_data <- data.frame(location = 0:400) |>
                                 location_categories)),
                    by = 'location') |>
   dplyr::mutate(location = as.character(location))
+
+# categories for the picker_part_type input
+participant_list <- lapply(
+  strsplit(participant_data$participant_type, ';'),
+  stringr::str_trim
+)
+participant_choices <- sort(
+  unique(unlist(participant_list))
+)
+
+

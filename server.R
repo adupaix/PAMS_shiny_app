@@ -515,7 +515,8 @@ server <- function(input, output) {
                                              'Design', 'Collect',
                                              'Analyze', 'Evaluate',
                                              'Disseminate', 'Unclear'
-                                           )))
+                                           ))) |>
+      dplyr::filter(participant_type %in% input$picker_part_types)
     
     ggplot2::ggplot(developed_data, ggplot2::aes(x = research_step,
                                                  fill = involvement_level))+
@@ -575,6 +576,7 @@ server <- function(input, output) {
     
     
   })
+  
   
 }
 
