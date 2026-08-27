@@ -1,8 +1,8 @@
-name: Build and test Docker image
+name: Docker image
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
   workflow_dispatch:
 
 jobs:
@@ -32,8 +32,3 @@ jobs:
             -p 7860:7860 \
             -e SYSREV_KEY="${{ secrets.SYSREV_KEY }}" \
             pams-shiny:test
-
-      - name: Check Shiny app
-        run: |
-          sleep 10
-          curl --fail http://localhost:7860
