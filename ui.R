@@ -225,7 +225,7 @@ ui <- dashboardPage(
         ## First row ----
         fluidRow(
           column(
-            width = 6,
+            width = 8,
             div(
               box(title = 'Participant type',
                   plotOutput('bar_part_type'),
@@ -234,7 +234,7 @@ ui <- dashboardPage(
             )
           ),
           column(
-            width = 6,
+            width = 4,
             div(
               box(title = 'Involvement iteration per participant type',
                   plotOutput('bar_iter_part_type'),
@@ -248,8 +248,26 @@ ui <- dashboardPage(
           column(
             width = 8,
             div(
-              box(title = 'Research step and involvement level',
-                  plotOutput('bar_step_involvement'),
+              box(title = 'Research step and involvement level per participant type',
+                  fluidRow(
+                    column(width = 3,
+                           pickerInput(
+                             inputId = "picker_part_types", 
+                             label = "Participant type(s)", 
+                             choices = participant_choices,
+                             selected = participant_choices,
+                             options = pickerOptions(
+                               actionsBox = TRUE, 
+                               size = 10,
+                               selectedTextFormat = "count > 3"
+                             ), 
+                             multiple = TRUE
+                           )
+                    ),
+                    column(width = 9,
+                           plotOutput('bar_step_involvement')
+                    )
+                  ),
                   width = 12
               )
             )

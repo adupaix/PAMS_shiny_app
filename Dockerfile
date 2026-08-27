@@ -27,7 +27,7 @@ RUN R -e " \
     pkgs <- c('ggplot2','arrow', 'brio', 'here', 'httr', 'igraph', 'jsonlite', \
               'magrittr', 'maps', 'osmdata', 'RColorBrewer', 'readxl', \
               'stringdist', 'stringi', 'bs4Dash', 'ggVennDiagram', \
-              'devtools'); \
+              'shinyWidgets','devtools'); \
     install.packages(pkgs, repos = 'https://cloud.r-project.org'); \
     missing <- setdiff(pkgs, rownames(installed.packages())); \
     if (length(missing) > 0) { \
