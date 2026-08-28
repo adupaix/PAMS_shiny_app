@@ -45,7 +45,7 @@ RUN R -e "devtools::install_github('yutannihilation/ggsflabel')" \
  && R -e "devtools::install_github('FRBCesab/rbibtools')" \
  && R -e "devtools::install_github('ricardo-bion/ggradar')"
 
-RUN --mount=type=secret,id=GITHUB_PAT,env=GITHUB_PAT \
+RUN --mount=type=secret,id=PAT_GITHUB,env=GITHUB_PAT \
     sh -c 'echo "PAT length inside container: ${#GITHUB_PAT}"' && \
     R -e "devtools::install_github('adupaix/SLRtools')"
 
