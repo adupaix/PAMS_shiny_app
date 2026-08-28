@@ -4222,6 +4222,38 @@
         "RemoteSha": "1.14.0"
       }
     },
+    "shinyWidgets": {
+      "Source": "CRAN",
+      "Repository": "https://cloud.r-project.org",
+      "description": {
+        "Package": "shinyWidgets",
+        "Title": "Custom Inputs Widgets for Shiny",
+        "Version": "0.9.1",
+        "Authors@R": "c(\n  person(\"Victor\", \"Perrier\", email = \"victor.perrier@dreamrs.fr\", role = c(\"aut\", \"cre\", \"cph\")),\n  person(\"Fanny\", \"Meyer\", role = \"aut\"),\n  person(\"David\", \"Granjon\", role = \"aut\"),\n  person(\"Ian\", \"Fellows\", role = \"ctb\", comment = \"Methods for mutating vertical tabs & updateMultiInput\"),\n  person(\"Wil\", \"Davis\", role = \"ctb\", comment = \"numericRangeInput function\"),\n  person(\"Spencer\", \"Matthews\", role = \"ctb\", comment = \"autoNumeric methods\"),\n  person(family = \"JavaScript and CSS libraries authors\", role = c(\"ctb\", \"cph\"), comment = \"All authors are listed in LICENSE.md\")\n  )",
+        "Description": "Collection of custom input controls and user interface components for 'Shiny' applications. \n  Give your applications a unique and colorful style !",
+        "URL": "https://github.com/dreamRs/shinyWidgets,\nhttps://dreamrs.github.io/shinyWidgets/",
+        "BugReports": "https://github.com/dreamRs/shinyWidgets/issues",
+        "License": "GPL-3",
+        "Encoding": "UTF-8",
+        "LazyData": "true",
+        "RoxygenNote": "7.3.3",
+        "Depends": "R (>= 3.1.0)",
+        "Imports": "bslib, sass, shiny (>= 1.6.0), htmltools (>= 0.5.1), jsonlite,\ngrDevices, rlang",
+        "Suggests": "testthat, covr, ggplot2, DT, scales, shinydashboard,\nshinydashboardPlus",
+        "NeedsCompilation": "no",
+        "Packaged": "2026-03-06 05:06:15 UTC; perri",
+        "Author": "Victor Perrier [aut, cre, cph],\n  Fanny Meyer [aut],\n  David Granjon [aut],\n  Ian Fellows [ctb] (Methods for mutating vertical tabs &\n    updateMultiInput),\n  Wil Davis [ctb] (numericRangeInput function),\n  Spencer Matthews [ctb] (autoNumeric methods),\n  JavaScript and CSS libraries authors [ctb, cph] (All authors are listed\n    in LICENSE.md)",
+        "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-03-09 08:30:02 UTC",
+        "Built": "R 4.6.1; ; 2026-08-27 15:58:00 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "shinyWidgets",
+        "RemoteRef": "shinyWidgets",
+        "RemoteRepos": "https://cloud.r-project.org",
+        "RemoteSha.Version": "0.9.1"
+      }
+    },
     "sourcetools": {
       "Source": "CRAN",
       "Repository": "https://cloud.r-project.org",
@@ -5288,9 +5320,6 @@
     }
   },
   "files": {
-    ".Renviron": {
-      "checksum": "2ca257f250cb547712c1bdd1f50e3ad9"
-    },
     "data/EEZ_land_union_v4_202410/EEZ_land_union_v4_202410.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
     },
@@ -5492,26 +5521,38 @@
     "data/sysrev_projects.txt": {
       "checksum": "62c06fdfef24bfa3d19c00aa25b6b7c0"
     },
+    "Dockerfile": {
+      "checksum": "8ac6b9ab95dc26baa0a780dd1a045328"
+    },
     "global.R": {
-      "checksum": "626ec7e427a5de28b753785110837193"
+      "checksum": "626f48f38463290cd1ee38f52449579f"
     },
     "LICENSE": {
       "checksum": "1ebbd3e34237af26da5dc08a4e440464"
     },
+    "manifest.json": {
+      "checksum": "49f382265e5f80d9d72159c7ba5b13a2"
+    },
+    "PAMS_shiny_app.Rproj": {
+      "checksum": "62265a32b7bdbb9391d23c989e121eb6"
+    },
     "R/load_sysrev_data.R": {
-      "checksum": "81087531d93ce8a7a22d2b67e5673b4d"
+      "checksum": "b6d77e6c94b0f824769bd209ab80e4f4"
     },
     "R/utils.R": {
       "checksum": "53bcd637e271866ebd7d5c24234af55c"
     },
     "README.md": {
-      "checksum": "cb863871d5d28516bb1886bf310dc9e3"
+      "checksum": "19698f12a9c54f6a50fb0690534bb5ff"
+    },
+    "rsconnect/shinyapps.io/adupaix/PAMS_shiny_app.dcf": {
+      "checksum": "91482592dfb59ff1fce8c30ce25855e5"
     },
     "server.R": {
-      "checksum": "032ba3baa3bcf7c2207fdb5a9eacb9a7"
+      "checksum": "84921fea10c8a2f1b2637b2f930297cd"
     },
     "ui.R": {
-      "checksum": "14a640b1c23de27c6a06c9e15330b1a9"
+      "checksum": "0f8814c46270bff09f963cac12acd107"
     },
     "www/Logo-PPR.png": {
       "checksum": "78bc5ce3319cdaeba3924a6057b7d09b"
