@@ -19,15 +19,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # NOTE: rocker/geospatial does not include the shiny package itself.
 RUN R -e "install.packages('shiny', repos = 'https://cloud.r-project.org')"
 
-# ── 3. SLRtools' full CRAN dependency tree (from its DESCRIPTION Imports) ───
+# ── 3. SLRtools' full CRAN dependency tree ───
 # NOTE: installed explicitly rather than assuming rocker/verse already has
 # them — several (httr, igraph, osmdata, readxl, RColorBrewer, stringdist,
 # here, arrow, jsonlite, magrittr, brio) are not part of core tidyverse.
-RUN R -e "install.packages(c( \
-    'arrow', 'brio', 'here', 'httr', 'igraph', 'jsonlite', 'magrittr', \
-    'maps', 'osmdata', 'RColorBrewer', 'readxl', 'stringdist', 'stringi', \
-    'bs4Dash', 'ggVennDiagram', 'devtools' \
-    ), repos = 'https://cloud.r-project.org')"
+RUN R -e " \
+    pkgs <- c('ggplot2','arrow', 'brio', 'here', 'httr', 'igraph', 'jsonlite', \
+              'magrittr', 'maps', 'osmdata', 'RColorBrewer', 'readxl', \
+              'stringdist', 'stringi', 'bs4Dash', 'ggVennDiagram', \
+              'shinyWidgets','devtools'); \
+    install.packages(pkgs, repos = 'https://cloud.r-project.org'); \
+    missing <- setdiff(pkgs, rownames(installed.packages())); \
+    if (length(missing) > 0) { \
+      stop('Failed to install: ', paste(missing, collapse = ', ')) \
+    }"
+
+    
 # NOTE: dplyr, ggplot2, purrr, sf, stringr, tibble, tidyr already present
 # in rocker/geospatial's tidyverse + spatial base layers.
 
@@ -39,6 +46,7 @@ RUN R -e "devtools::install_github('yutannihilation/ggsflabel')" \
  && R -e "devtools::install_github('ricardo-bion/ggradar')"
 
 RUN --mount=type=secret,id=PAT_GITHUB,env=GITHUB_PAT \
+    sh -c 'echo "PAT length inside container: ${#GITHUB_PAT}"' && \
     R -e "devtools::install_github('adupaix/SLRtools')"
 
 

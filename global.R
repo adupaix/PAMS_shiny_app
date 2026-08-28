@@ -16,6 +16,7 @@ library(tidyr)
 library(ggplot2)
 library(ggVennDiagram)
 library(devtools)
+library(shinyWidgets)
 
 if (!'SLRtools' %in% installed.packages()){
   devtools::install_github("yutannihilation/ggsflabel")
@@ -40,7 +41,7 @@ lands_path <- file.path(data_dir, 'OSM_lands')
 regions_path <- file.path(data_dir, 'French_regions')
 
 # variables definition
-n_to_code <- 766
+n_to_code <- 769
 
 # source file that loads and formats sysrev data
 source('R/load_sysrev_data.R')
