@@ -76,6 +76,29 @@ ui <- dashboardPage(
         tabName = "tab_articles",
         ## First row ----
         fluidRow(
+          box(
+            title = "Number of papers per publication year",
+            fluidRow(
+              column(
+                width = 3,
+                pickerInput(
+                  inputId = "picker_area_var",
+                  label = "Colour by",
+                  choices = area_choices,
+                  selected = area_choices[1],
+                  multiple = FALSE
+                )
+              ),
+              column(
+                width = 9,
+                plotOutput("area_papers_year")
+              )
+            ),
+            width = 12
+          )
+        ),
+        ## Second row ----
+        fluidRow(
           column(
             width = 7,
             div(
@@ -101,7 +124,7 @@ ui <- dashboardPage(
           )
           
         ),
-        ## Second row ----
+        ## Third row ----
         fluidRow(
           column(
             width = 5,
@@ -123,7 +146,7 @@ ui <- dashboardPage(
             
           )
         ),
-        # Third row ----
+        ## Fourth row ----
         fluidRow(
           box(title = "Engagement objectives",
               
@@ -185,15 +208,30 @@ ui <- dashboardPage(
         ),
         ## Second row ----
         fluidRow(
-          
-          column(
-            width = 12,
-            div(
-              box(title = "Map of study site location in the Hexagone",
-                  plotOutput("map_hexagone"),
-                  width = 12)
-            )
-          )
+          box(title = "Map of study site location in the Hexagone",
+              plotOutput("map_hexagone"),
+              width = 6),
+          box(title = "Map of study site location in the Caribbean",
+              plotOutput("map_caribbean"),
+              width = 6)  
+        ),
+        ## Third row ----
+        fluidRow(
+          box(title = "Map of Pacific and America",
+              plotOutput("map_epo"),
+              width = 6),
+          box(title = "Map of study site location in Polynesia",
+              plotOutput("map_polynesie"),
+              width = 6)
+        ),
+        ## Fourth row ----
+        fluidRow(
+          box(title = "Map of Indian Ocean and Oceania",
+              plotOutput("map_io"),
+              width = 6),
+          box(title = "Map of study site location in the South-West Indian Ocean",
+              plotOutput("map_swio"),
+              width = 6)
         )
       ),
       # ---- TAB 3: Case study level variables ----

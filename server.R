@@ -200,6 +200,70 @@ server <- function(input, output) {
         axis.title.y = ggplot2::element_blank())
   })
   
+  # Area plot: number of papers per publication year, coloured by chosen variable
+  output$area_papers_year <- renderPlot({
+    input$reload_data
+    req(input$picker_area_var)
+    
+    fill_var <- input$picker_area_var
+    fill_raw <- as.character(included_papers[[fill_var]])
+    
+    if (fill_var %in% c('impact_evaluation', 'levers', 'challenges')) {
+      fill_value <- dplyr::case_when(
+        fill_raw == 'Detailed' ~ 'Detailed/Evaluated',
+        fill_raw == 'Evaluated' ~ 'Detailed/Evaluated',
+        fill_raw == 'Mentioned' ~ 'Mentioned/Discussed',
+        fill_raw == 'Discussed' ~ 'Mentioned/Discussed',
+        TRUE ~ fill_raw
+      )
+      fill_levels <- unique(c(
+        'No', 'Detailed/Evaluated', 'Mentioned/Discussed',
+        sort(unique(stats::na.omit(fill_value)))
+      ))
+      plot_palette <- ggplot2::scale_fill_brewer(
+        names(area_choices)[match(fill_var, area_choices)],
+        palette = 'Blues',
+        drop = FALSE
+      )
+    } else {
+      fill_value <- fill_raw
+      # NOTE: unexpected values are appended to the expected levels instead of
+      # being silently coerced to NA
+      fill_levels <- unique(c(area_levels[[fill_var]],
+                              sort(unique(stats::na.omit(fill_raw)))))
+      plot_palette <- ggplot2::scale_fill_viridis_d(
+        names(area_choices)[match(fill_var, area_choices)],
+        direction = -1
+      )
+    }
+    
+    year_counts <- tibble::tibble(
+      Publication.Year = as.numeric(included_papers$Publication.Year),
+      fill_value = factor(fill_value, levels = fill_levels)
+    ) |>
+      dplyr::filter(!is.na(Publication.Year), !is.na(fill_value)) |>
+      dplyr::count(Publication.Year, fill_value) |>
+      # explicit zeros: without them geom_area interpolates linearly across
+      # missing year x category combinations and draws artefacts
+      tidyr::complete(
+        Publication.Year = tidyr::full_seq(Publication.Year, period = 1),
+        fill_value,
+        fill = list(n = 0)
+      )
+    
+    ggplot2::ggplot(year_counts,
+                    ggplot2::aes(x = Publication.Year,
+                                 y = n,
+                                 fill = fill_value)) +
+      ggplot2::geom_area(colour = "white", linewidth = 0.2) +
+      plot_palette +
+      ggplot2::xlab("Publication year") +
+      ggplot2::ylab("Number of papers") +
+      ggplot2::theme(panel.background = ggplot2::element_rect(
+        fill = "white", color = "black"),
+        panel.grid.major = ggplot2::element_line(color = "grey"))
+  })
+  
   ## Engagement objectives plots
   # a. plot with coarse categories
   output$bar_engage_large <- renderPlot({
@@ -330,12 +394,56 @@ server <- function(input, output) {
     
   })
   
-  # Map of the Hexagone
+  # Map of study sites in the Hexagone
   output$map_hexagone <- renderPlot({
     input$reload_data
     
     SLRtools::build_map_hexagone(eez_path, lands_path, regions_path,
                                  count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of the Caribbean
+  output$map_caribbean <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_caraibe(eez_path, lands_path, regions_path,
+                                   count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of Pacific and America
+  output$map_epo <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_epo(eez_path, lands_path, regions_path,
+                            count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of French Polynesia
+  output$map_polynesie <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_polynesie(eez_path, lands_path, count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of Indian Ocean and Oceania
+  output$map_io <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_io(eez_path, lands_path, regions_path,
+                           count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of South-West Indian Ocean
+  output$map_swio <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_swio(eez_path, lands_path, regions_path,
+                            count_data)+
       ggplot2::ggtitle('')
   })
   

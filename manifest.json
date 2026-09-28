@@ -245,23 +245,24 @@
         "License": "GPL (>= 3)",
         "Encoding": "UTF-8",
         "Imports": "arrow, brio, dplyr, ggplot2, ggsflabel, here, httr, igraph,\njsonlite, magrittr, maps, osmdata, purrr, rbibtools,\nRColorBrewer, readxl, sf, stringdist, stringi, stringr, tibble,\ntidyr",
-        "Config/roxygen2/version": "8.0.0",
+        "Config/roxygen2/version": "8.1.0",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteRepo": "SLRtools",
         "RemoteUsername": "adupaix",
+        "RemotePkgRef": "adupaix/SLRtools",
         "RemoteRef": "HEAD",
-        "RemoteSha": "5a4e867e6213b35f89bc981f62ea513e58a83a51",
+        "RemoteSha": "16ae67dd57e50a47b54e7b7d96f44c51e714a06f",
         "GithubRepo": "SLRtools",
         "GithubUsername": "adupaix",
         "GithubRef": "HEAD",
-        "GithubSHA1": "5a4e867e6213b35f89bc981f62ea513e58a83a51",
+        "GithubSHA1": "16ae67dd57e50a47b54e7b7d96f44c51e714a06f",
         "NeedsCompilation": "no",
-        "Packaged": "2026-08-20 18:13:18 UTC; adupaix",
+        "Packaged": "2026-09-28 21:10:19 UTC; adupaix",
         "Author": "Amaël Dupaix [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-9925-5756>)",
         "Maintainer": "Amaël Dupaix <amael.dupaix@ird.fr>",
         "Depends": "R (>= 4.1.0)",
-        "Built": "R 4.6.1; ; 2026-08-20 18:13:18 UTC; unix"
+        "Built": "R 4.6.1; ; 2026-09-28 21:10:20 UTC; unix"
       }
     },
     "admisc": {
@@ -5320,6 +5321,9 @@
     }
   },
   "files": {
+    "data/articles_data.rds": {
+      "checksum": "22749a680daf9ff4e0f0c20e993913df"
+    },
     "data/EEZ_land_union_v4_202410/EEZ_land_union_v4_202410.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
     },
@@ -5525,19 +5529,19 @@
       "checksum": "8ac6b9ab95dc26baa0a780dd1a045328"
     },
     "global.R": {
-      "checksum": "626f48f38463290cd1ee38f52449579f"
+      "checksum": "1c4caf3462dceb210a1897a13b46ba6a"
     },
     "LICENSE": {
       "checksum": "1ebbd3e34237af26da5dc08a4e440464"
     },
     "manifest.json": {
-      "checksum": "49f382265e5f80d9d72159c7ba5b13a2"
+      "checksum": "c0cd620fb1f0a8542911cbd1885b64ad"
     },
     "PAMS_shiny_app.Rproj": {
       "checksum": "62265a32b7bdbb9391d23c989e121eb6"
     },
     "R/load_sysrev_data.R": {
-      "checksum": "b6d77e6c94b0f824769bd209ab80e4f4"
+      "checksum": "1337a9795dd6f55fc312f178dd349678"
     },
     "R/utils.R": {
       "checksum": "53bcd637e271866ebd7d5c24234af55c"
@@ -5549,10 +5553,10 @@
       "checksum": "91482592dfb59ff1fce8c30ce25855e5"
     },
     "server.R": {
-      "checksum": "84921fea10c8a2f1b2637b2f930297cd"
+      "checksum": "cdee22f7af03bd24528a2019f2dd9102"
     },
     "ui.R": {
-      "checksum": "0f8814c46270bff09f963cac12acd107"
+      "checksum": "31c9832b989accac883fd800662dcf55"
     },
     "www/Logo-PPR.png": {
       "checksum": "78bc5ce3319cdaeba3924a6057b7d09b"

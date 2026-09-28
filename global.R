@@ -41,7 +41,28 @@ lands_path <- file.path(data_dir, 'OSM_lands')
 regions_path <- file.path(data_dir, 'French_regions')
 
 # variables definition
-n_to_code <- 769
+# update 28/09/2026
+n_to_code <- 804
+
+# Choices and level order for the "papers per year" area plot
+# (names = labels shown in the pickerInput)
+area_choices <- c(
+  "Impact evaluation"          = "impact_evaluation",
+  "Levers"                     = "levers",
+  "Challenges"                 = "challenges",
+  "Participants definition"    = "has_participant_definition",
+  "Approach definition"        = "has_approach_definition"
+)
+
+# Ordinal order of the coded values (raw values, not merged categories)
+depth_levels <- c("No", "Mentioned", "Discussed", "Evaluated", "Detailed")
+area_levels <- list(
+  impact_evaluation          = depth_levels,
+  levers                     = depth_levels,
+  challenges                 = depth_levels,
+  has_participant_definition = c("FALSE", "TRUE"),
+  has_approach_definition    = c("FALSE", "TRUE")
+)
 
 # source file that loads and formats sysrev data
 source('R/load_sysrev_data.R')
