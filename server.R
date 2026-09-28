@@ -208,14 +208,38 @@ server <- function(input, output) {
     fill_var <- input$picker_area_var
     fill_raw <- as.character(included_papers[[fill_var]])
     
-    # NOTE: unexpected values are appended to the expected levels instead of
-    # being silently coerced to NA
-    fill_levels <- unique(c(area_levels[[fill_var]],
-                            sort(unique(stats::na.omit(fill_raw)))))
+    if (fill_var %in% c('impact_evaluation', 'levers', 'challenges')) {
+      fill_value <- dplyr::case_when(
+        fill_raw == 'Detailed' ~ 'Detailed/Evaluated',
+        fill_raw == 'Evaluated' ~ 'Detailed/Evaluated',
+        fill_raw == 'Mentioned' ~ 'Mentioned/Discussed',
+        fill_raw == 'Discussed' ~ 'Mentioned/Discussed',
+        TRUE ~ fill_raw
+      )
+      fill_levels <- unique(c(
+        'No', 'Detailed/Evaluated', 'Mentioned/Discussed',
+        sort(unique(stats::na.omit(fill_value)))
+      ))
+      plot_palette <- ggplot2::scale_fill_brewer(
+        names(area_choices)[match(fill_var, area_choices)],
+        palette = 'Blues',
+        drop = FALSE
+      )
+    } else {
+      fill_value <- fill_raw
+      # NOTE: unexpected values are appended to the expected levels instead of
+      # being silently coerced to NA
+      fill_levels <- unique(c(area_levels[[fill_var]],
+                              sort(unique(stats::na.omit(fill_raw)))))
+      plot_palette <- ggplot2::scale_fill_viridis_d(
+        names(area_choices)[match(fill_var, area_choices)],
+        direction = -1
+      )
+    }
     
     year_counts <- tibble::tibble(
       Publication.Year = as.numeric(included_papers$Publication.Year),
-      fill_value = factor(fill_raw, levels = fill_levels)
+      fill_value = factor(fill_value, levels = fill_levels)
     ) |>
       dplyr::filter(!is.na(Publication.Year), !is.na(fill_value)) |>
       dplyr::count(Publication.Year, fill_value) |>
@@ -227,14 +251,12 @@ server <- function(input, output) {
         fill = list(n = 0)
       )
     
-    legend_label <- names(area_choices)[match(fill_var, area_choices)]
-    
     ggplot2::ggplot(year_counts,
                     ggplot2::aes(x = Publication.Year,
                                  y = n,
                                  fill = fill_value)) +
       ggplot2::geom_area(colour = "white", linewidth = 0.2) +
-      ggplot2::scale_fill_viridis_d(legend_label, direction = -1) +  # viridis
+      plot_palette +
       ggplot2::xlab("Publication year") +
       ggplot2::ylab("Number of papers") +
       ggplot2::theme(panel.background = ggplot2::element_rect(

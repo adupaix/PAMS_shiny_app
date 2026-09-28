@@ -52,3 +52,5 @@ rsconnect/
 data/proj*
 data/*-user_answers.csv
 
+# ignore agent
+.github/agents
