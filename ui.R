@@ -76,6 +76,29 @@ ui <- dashboardPage(
         tabName = "tab_articles",
         ## First row ----
         fluidRow(
+          box(
+            title = "Number of papers per publication year",
+            fluidRow(
+              column(
+                width = 3,
+                pickerInput(
+                  inputId = "picker_area_var",
+                  label = "Colour by",
+                  choices = area_choices,
+                  selected = area_choices[1],
+                  multiple = FALSE
+                )
+              ),
+              column(
+                width = 9,
+                plotOutput("area_papers_year")
+              )
+            ),
+            width = 12
+          )
+        ),
+        ## Second row ----
+        fluidRow(
           column(
             width = 7,
             div(
@@ -101,7 +124,7 @@ ui <- dashboardPage(
           )
           
         ),
-        ## Second row ----
+        ## Third row ----
         fluidRow(
           column(
             width = 5,
@@ -123,7 +146,7 @@ ui <- dashboardPage(
             
           )
         ),
-        # Third row ----
+        ## Fourth row ----
         fluidRow(
           box(title = "Engagement objectives",
               

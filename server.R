@@ -200,6 +200,48 @@ server <- function(input, output) {
         axis.title.y = ggplot2::element_blank())
   })
   
+  # Area plot: number of papers per publication year, coloured by chosen variable
+  output$area_papers_year <- renderPlot({
+    input$reload_data
+    req(input$picker_area_var)
+    
+    fill_var <- input$picker_area_var
+    fill_raw <- as.character(included_papers[[fill_var]])
+    
+    # NOTE: unexpected values are appended to the expected levels instead of
+    # being silently coerced to NA
+    fill_levels <- unique(c(area_levels[[fill_var]],
+                            sort(unique(stats::na.omit(fill_raw)))))
+    
+    year_counts <- tibble::tibble(
+      Publication.Year = as.numeric(included_papers$Publication.Year),
+      fill_value = factor(fill_raw, levels = fill_levels)
+    ) |>
+      dplyr::filter(!is.na(Publication.Year), !is.na(fill_value)) |>
+      dplyr::count(Publication.Year, fill_value) |>
+      # explicit zeros: without them geom_area interpolates linearly across
+      # missing year x category combinations and draws artefacts
+      tidyr::complete(
+        Publication.Year = tidyr::full_seq(Publication.Year, period = 1),
+        fill_value,
+        fill = list(n = 0)
+      )
+    
+    legend_label <- names(area_choices)[match(fill_var, area_choices)]
+    
+    ggplot2::ggplot(year_counts,
+                    ggplot2::aes(x = Publication.Year,
+                                 y = n,
+                                 fill = fill_value)) +
+      ggplot2::geom_area(colour = "white", linewidth = 0.2) +
+      ggplot2::scale_fill_viridis_d(legend_label, direction = -1) +  # viridis
+      ggplot2::xlab("Publication year") +
+      ggplot2::ylab("Number of papers") +
+      ggplot2::theme(panel.background = ggplot2::element_rect(
+        fill = "white", color = "black"),
+        panel.grid.major = ggplot2::element_line(color = "grey"))
+  })
+  
   ## Engagement objectives plots
   # a. plot with coarse categories
   output$bar_engage_large <- renderPlot({

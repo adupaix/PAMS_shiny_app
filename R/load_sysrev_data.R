@@ -17,6 +17,9 @@ if(reload_data ||
   project_ids <- as.numeric(
     readLines(file.path(data_dir, 'sysrev_projects.txt'))
   )
+  articles_data <- SLRtools::zotero_format_data(
+    readRDS(file.path(data_dir, 'articles_data.rds'))
+  )
   
   for (i in 1:length(project_ids)){
     project <- project_ids[i] ; project_id <- paste0("proj_", project)
@@ -34,7 +37,8 @@ if(reload_data ||
     formatted_data <- SLRtools::sysrev_format_data(
       project_id = project_id,
       data_dir = data_dir,
-      group_label_fun = sysrev_develop_group_labels_pams
+      articles_data = articles_data,
+      group_label_fun = sysrev_develop_group_labels_pams,
     )
     user_answers[[i]] <- formatted_data$user_answers
   }
@@ -56,7 +60,7 @@ user_answers <- utils::read.csv(file.path(data_dir,
 # get simplified df with per article information
 # keep one row per paper
 answers_per_paper <- user_answers |>
-  dplyr::select(project_id:challenges) |>
+  dplyr::select(project_id:challenges, title:Book.Author) |>
   dplyr::distinct()
 # calculate basic screening information
 excluded_papers <- answers_per_paper |>
@@ -82,6 +86,16 @@ included_papers$levers[
   which(is.na(included_papers$levers))] <- 'No'
 included_papers$challenges[
   which(is.na(included_papers$challenges))] <- 'No'
+# Boolean flags at article level: TRUE if a definition is provided, i.e. the
+# coded value is not NA / "none" / "no" (case- and whitespace-insensitive).
+included_papers <- included_papers |>
+  dplyr::mutate(
+    dplyr::across(
+      c(participant_definition, approach_definition),
+      ~ !(is.na(.x) | tolower(trimws(.x)) %in% c("none", "no", "")),
+      .names = "has_{.col}"
+    )
+  )
 
 
 # keep a data frame with only the included papers
