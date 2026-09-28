@@ -208,15 +208,30 @@ ui <- dashboardPage(
         ),
         ## Second row ----
         fluidRow(
-          
-          column(
-            width = 12,
-            div(
-              box(title = "Map of study site location in the Hexagone",
-                  plotOutput("map_hexagone"),
-                  width = 12)
-            )
-          )
+          box(title = "Map of study site location in the Hexagone",
+              plotOutput("map_hexagone"),
+              width = 6),
+          box(title = "Map of study site location in the Caribbean",
+              plotOutput("map_caribbean"),
+              width = 6)  
+        ),
+        ## Third row ----
+        fluidRow(
+          box(title = "Map of Pacific and America",
+              plotOutput("map_epo"),
+              width = 6),
+          box(title = "Map of study site location in Polynesia",
+              plotOutput("map_polynesie"),
+              width = 6)
+        ),
+        ## Fourth row ----
+        fluidRow(
+          box(title = "Map of Indian Ocean and Oceania",
+              plotOutput("map_io"),
+              width = 6),
+          box(title = "Map of study site location in the South-West Indian Ocean",
+              plotOutput("map_swio"),
+              width = 6)
         )
       ),
       # ---- TAB 3: Case study level variables ----

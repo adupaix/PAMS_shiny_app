@@ -394,12 +394,56 @@ server <- function(input, output) {
     
   })
   
-  # Map of the Hexagone
+  # Map of study sites in the Hexagone
   output$map_hexagone <- renderPlot({
     input$reload_data
     
     SLRtools::build_map_hexagone(eez_path, lands_path, regions_path,
                                  count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of the Caribbean
+  output$map_caribbean <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_caraibe(eez_path, lands_path, regions_path,
+                                   count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of Pacific and America
+  output$map_epo <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_epo(eez_path, lands_path, regions_path,
+                            count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of French Polynesia
+  output$map_polynesie <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_polynesie(eez_path, lands_path, count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of Indian Ocean and Oceania
+  output$map_io <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_io(eez_path, lands_path, regions_path,
+                           count_data)+
+      ggplot2::ggtitle('')
+  })
+
+  # Map of South-West Indian Ocean
+  output$map_swio <- renderPlot({
+    input$reload_data
+
+    SLRtools::build_map_swio(eez_path, lands_path, regions_path,
+                            count_data)+
       ggplot2::ggtitle('')
   })
   

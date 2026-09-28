@@ -252,17 +252,17 @@
         "RemoteUsername": "adupaix",
         "RemotePkgRef": "adupaix/SLRtools",
         "RemoteRef": "HEAD",
-        "RemoteSha": "b8169362d737e4c926a641a8f22b0c958c838343",
+        "RemoteSha": "16ae67dd57e50a47b54e7b7d96f44c51e714a06f",
         "GithubRepo": "SLRtools",
         "GithubUsername": "adupaix",
         "GithubRef": "HEAD",
-        "GithubSHA1": "b8169362d737e4c926a641a8f22b0c958c838343",
+        "GithubSHA1": "16ae67dd57e50a47b54e7b7d96f44c51e714a06f",
         "NeedsCompilation": "no",
-        "Packaged": "2026-09-28 20:16:33 UTC; adupaix",
+        "Packaged": "2026-09-28 21:10:19 UTC; adupaix",
         "Author": "Amaël Dupaix [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-9925-5756>)",
         "Maintainer": "Amaël Dupaix <amael.dupaix@ird.fr>",
         "Depends": "R (>= 4.1.0)",
-        "Built": "R 4.6.1; ; 2026-09-28 20:16:34 UTC; unix"
+        "Built": "R 4.6.1; ; 2026-09-28 21:10:20 UTC; unix"
       }
     },
     "admisc": {
@@ -5535,7 +5535,7 @@
       "checksum": "1ebbd3e34237af26da5dc08a4e440464"
     },
     "manifest.json": {
-      "checksum": "11008c52de693eee2cb5e9c5db68d4ab"
+      "checksum": "c0cd620fb1f0a8542911cbd1885b64ad"
     },
     "PAMS_shiny_app.Rproj": {
       "checksum": "62265a32b7bdbb9391d23c989e121eb6"
@@ -5553,10 +5553,10 @@
       "checksum": "91482592dfb59ff1fce8c30ce25855e5"
     },
     "server.R": {
-      "checksum": "756d45d68cfe879350e65ea64423fa01"
+      "checksum": "cdee22f7af03bd24528a2019f2dd9102"
     },
     "ui.R": {
-      "checksum": "7fa90845ea07c27371d3ade9ca6bb06b"
+      "checksum": "31c9832b989accac883fd800662dcf55"
     },
     "www/Logo-PPR.png": {
       "checksum": "78bc5ce3319cdaeba3924a6057b7d09b"
