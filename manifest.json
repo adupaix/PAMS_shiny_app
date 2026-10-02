@@ -252,17 +252,17 @@
         "RemoteUsername": "adupaix",
         "RemotePkgRef": "adupaix/SLRtools",
         "RemoteRef": "HEAD",
-        "RemoteSha": "16ae67dd57e50a47b54e7b7d96f44c51e714a06f",
+        "RemoteSha": "8f98bc0ed58f47a07b727e5e398d74f9d434eb3b",
         "GithubRepo": "SLRtools",
         "GithubUsername": "adupaix",
         "GithubRef": "HEAD",
-        "GithubSHA1": "16ae67dd57e50a47b54e7b7d96f44c51e714a06f",
+        "GithubSHA1": "8f98bc0ed58f47a07b727e5e398d74f9d434eb3b",
         "NeedsCompilation": "no",
-        "Packaged": "2026-09-28 21:10:19 UTC; adupaix",
+        "Packaged": "2026-10-02 12:52:09 UTC; adupaix",
         "Author": "Amaël Dupaix [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-9925-5756>)",
         "Maintainer": "Amaël Dupaix <amael.dupaix@ird.fr>",
         "Depends": "R (>= 4.1.0)",
-        "Built": "R 4.6.1; ; 2026-09-28 21:10:20 UTC; unix"
+        "Built": "R 4.6.1; ; 2026-10-02 12:52:10 UTC; unix"
       }
     },
     "admisc": {
@@ -1736,6 +1736,32 @@
         "RemoteRepos": "https://cloud.r-project.org",
         "RemotePkgPlatform": "source",
         "RemoteSha": "0.2.1"
+      }
+    },
+    "ggnewscale": {
+      "Source": "CRAN",
+      "Repository": "https://cloud.r-project.org",
+      "description": {
+        "Package": "ggnewscale",
+        "Language": "en-GB",
+        "Title": "Multiple Fill and Colour Scales in 'ggplot2'",
+        "Version": "0.5.2",
+        "Authors@R": "\n    person(given = \"Elio\",\n           family = \"Campitelli\",\n           role = c(\"cre\", \"aut\"),\n           email = \"eliocampitelli@gmail.com\",\n           comment = c(ORCID = \"0000-0002-7742-9230\"))",
+        "Description": "Use multiple fill and colour scales in 'ggplot2'.",
+        "License": "GPL-3",
+        "URL": "https://eliocamp.github.io/ggnewscale/,\nhttps://github.com/eliocamp/ggnewscale",
+        "BugReports": "https://github.com/eliocamp/ggnewscale/issues",
+        "Encoding": "UTF-8",
+        "Imports": "ggplot2 (>= 3.5.0)",
+        "RoxygenNote": "7.3.2",
+        "Suggests": "testthat, vdiffr, covr",
+        "NeedsCompilation": "no",
+        "Packaged": "2025-06-20 03:50:42 UTC; elio",
+        "Author": "Elio Campitelli [cre, aut] (ORCID:\n    <https://orcid.org/0000-0002-7742-9230>)",
+        "Maintainer": "Elio Campitelli <eliocampitelli@gmail.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-06-20 04:50:02 UTC",
+        "Built": "R 4.6.1; ; 2026-10-02 11:51:34 UTC; unix"
       }
     },
     "ggplot2": {
@@ -5324,6 +5350,9 @@
     "data/articles_data.rds": {
       "checksum": "22749a680daf9ff4e0f0c20e993913df"
     },
+    "data/capture.png": {
+      "checksum": "080c318ff90b42330a7f8b8a22fcb777"
+    },
     "data/EEZ_land_union_v4_202410/EEZ_land_union_v4_202410.cpg": {
       "checksum": "ae3b3df9970b49b6523e608759bc957d"
     },
@@ -5523,22 +5552,28 @@
       "checksum": "ceba12cfa1b4be95ce904187d2bda1de"
     },
     "data/sysrev_projects.txt": {
-      "checksum": "62c06fdfef24bfa3d19c00aa25b6b7c0"
+      "checksum": "67cc8150d02462d1957a972e4f4ed8a7"
     },
     "Dockerfile": {
       "checksum": "8ac6b9ab95dc26baa0a780dd1a045328"
     },
     "global.R": {
-      "checksum": "1c4caf3462dceb210a1897a13b46ba6a"
+      "checksum": "129ce312b5162d924a73e60a760c666a"
     },
     "LICENSE": {
       "checksum": "1ebbd3e34237af26da5dc08a4e440464"
     },
     "manifest.json": {
-      "checksum": "c0cd620fb1f0a8542911cbd1885b64ad"
+      "checksum": "a1ce5b3224be262db3d67819a0644652"
     },
     "PAMS_shiny_app.Rproj": {
       "checksum": "62265a32b7bdbb9391d23c989e121eb6"
+    },
+    "plot_list.txt": {
+      "checksum": "a1ce8730490b23715e7aafc03147a3fe"
+    },
+    "plot_workflow.qmd": {
+      "checksum": "ee5bb89da711cb1b935a762788651a5d"
     },
     "R/load_sysrev_data.R": {
       "checksum": "1337a9795dd6f55fc312f178dd349678"
@@ -5553,10 +5588,10 @@
       "checksum": "91482592dfb59ff1fce8c30ce25855e5"
     },
     "server.R": {
-      "checksum": "cdee22f7af03bd24528a2019f2dd9102"
+      "checksum": "063ca217bc7fe6f65f441a70ca806abb"
     },
     "ui.R": {
-      "checksum": "31c9832b989accac883fd800662dcf55"
+      "checksum": "be94dbea5d63368fa836763868d03e80"
     },
     "www/Logo-PPR.png": {
       "checksum": "78bc5ce3319cdaeba3924a6057b7d09b"

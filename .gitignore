@@ -53,4 +53,8 @@ data/proj*
 data/*-user_answers.csv
 
 # ignore agent
-.github/agents
+.github/agents/*
+
+# ignore figures and quarto documents
+outputs/*
+qmd/*

@@ -569,7 +569,7 @@ server <- function(input, output) {
     part_type_categories <- data.frame(category = sort(c(
       "General public", "Art & culture sector", "Education sector",
       "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Public authorities, decision makers and managers",
+      "Other industries", "Decision makers",
       "NGOs", "Science & research", "Others", "Unclear"
     ))) |>
       dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~
@@ -646,7 +646,7 @@ server <- function(input, output) {
     part_type_categories <- data.frame(category = sort(c(
       "General public", "Art & culture sector", "Education sector",
       "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Public authorities, decision makers and managers",
+      "Other industries", "Decision makers",
       "NGOs", "Science & research", "Others", "Unclear"
     ))) |>
       dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~

@@ -100,7 +100,12 @@ included_papers <- included_papers |>
 
 # keep a data frame with only the included papers
 included_answers <- user_answers |>
-  dplyr::filter(include_code)
+  dplyr::filter(include_code) |>
+  dplyr::mutate(participant_type = stringr::str_replace_all(
+    participant_type,
+    stringr::fixed("Public authorities, decision makers and managers"),
+    "Decision makers"
+  ))
 
 # Automatic correction: habitats
 included_answers <- included_answers |>
