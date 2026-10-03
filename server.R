@@ -526,7 +526,7 @@ server <- function(input, output) {
       ])+
       ggplot2::scale_fill_manual('', values = c(Known = "#08519C",
                                                 Other = 'grey'))+
-      ggplot2::xlab('Drivers of change')+
+      ggplot2::xlab('Activities and uses')+
       ggplot2::ylab('Number of case studies')+
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
