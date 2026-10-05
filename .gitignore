@@ -57,5 +57,5 @@ data/*-user_answers.csv
 CLAUDE.md
 
 # ignore figures and quarto documents
-outputs/*
+outputs/
 qmd/*
