@@ -52,5 +52,10 @@ rsconnect/
 data/proj*
 data/*-user_answers.csv
 
-# ignore agent
-.github/agents
+# ignore agents
+.github/agents/*
+CLAUDE.md
+
+# ignore figures and quarto documents
+outputs/
+qmd/*

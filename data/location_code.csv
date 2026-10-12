@@ -1,0 +1,68 @@
+code,location_name_group,location_name_subgroup
+0,Hexagone,Hexagone
+1,Hexagone,Haut-de-France
+2,Hexagone,Normandie
+3,Hexagone,Bretagne
+4,Hexagone,Pays de la Loire
+5,Hexagone,Nouvelle Aquitaine
+6,Hexagone,Occitanie
+7,Hexagone,Provence-Alpes-Côte d’Azur
+10,Corse,Corse
+20,Clipperton,Clipperton
+30,Guadeloupe,Guadeloupe
+40,Guyane,Guyane
+50,Martinique,Martinique
+60,Mayotte,Mayotte
+70,Nouvelle Calédonie,Nouvelle Calédonie
+71,Nouvelle Calédonie,Province Nord
+72,Nouvelle Calédonie,Province Sud
+73,Nouvelle Calédonie,Iles Loyauté
+80,Polynésie Française,Polynésie Française
+81,Polynésie Française,Îles de la Société
+82,Polynésie Française,Îles Australes
+83,Polynésie Française,Îles Marquises
+84,Polynésie Française,Tuamotu - Gambier
+90,Réunion,Réunion
+100,St Barthélemy,St Barthélemy
+110,St Pierre et Miquelon,St Pierre et Miquelon
+120,TAAF,TAAF
+121,TAAF,"Îles Eparses (inclus Juan de Nova, Bassa da India, Europa, Tromelin et Glorieuse)"
+122,TAAF,St Paul & Amsterdam
+123,TAAF,Kerguelen
+124,TAAF,Crozet
+130,Wallis & Futuna,Wallis & Futuna
+140,Global (France),Global (France)
+150,Global (Europe),Global (Europe)
+160,Global (International),Global (International)
+200,Hexagone,Hexagone
+201,Hexagone,Mer Celtique - Manche - Mer du Nord
+202,Hexagone,Golfe de Gascogne Nord
+203,Hexagone,Golfe de Gascogne Sud
+204,Hexagone,Mer Méditerranée
+210,Eaux internationales,Eaux internationales
+211,Eaux internationales,Océan Arctique
+212,Eaux internationales,Océan Atlantique Nord
+213,Eaux internationales,Océan Atlantique Sud
+214,Eaux internationales,Océan Austral
+215,Eaux internationales,Océan Indien
+216,Eaux internationales,Mer Méditerranée
+217,Eaux internationales,Océan Pacifique Nord
+218,Eaux internationales,Océan Pacifique Sud
+220,Clipperton,Clipperton
+230,Guadeloupe,Guadeloupe
+240,Guyane,Guyane
+250,Martinique,Martinique
+260,Mayotte,Mayotte
+270,Nouvelle Calédonie,Nouvelle Calédonie
+280,Polynésie Française,Polynésie Française
+290,Réunion,Réunion
+300,St Barthélemy,St Barthélemy
+310,St Pierre et Miquelon,St Pierre et Miquelon
+320,TAAF,TAAF
+321,TAAF,"Îles Eparses"
+322,TAAF,St Paul & Amsterdam
+323,TAAF,Kerguelen
+324,TAAF,Crozet
+330,Wallis & Futuna,Wallis & Futuna
+340,Global France,Global France
+350,Global ocean,Global ocean

@@ -100,7 +100,12 @@ included_papers <- included_papers |>
 
 # keep a data frame with only the included papers
 included_answers <- user_answers |>
-  dplyr::filter(include_code)
+  dplyr::filter(include_code) |>
+  dplyr::mutate(participant_type = stringr::str_replace_all(
+    participant_type,
+    stringr::fixed("Public authorities, decision makers and managers"),
+    "Decision makers"
+  ))
 
 # Automatic correction: habitats
 included_answers <- included_answers |>
@@ -142,20 +147,41 @@ case_study_data <- included_answers |>
 participant_data <- included_answers
 
 # Data for the maps
-location_list <- lapply(
-  strsplit(included_answers$study_site_location, ';'),
-  stringr::str_trim
-)
-location_categories <- sort(
-  unique(unlist(location_list))
-)
+# Counts are computed on case_study_data (one row per case study) so that
+# case studies with several participants are not counted several times.
+# One row per case study x coded location.
+case_study_locations <- case_study_data |>
+  dplyr::select(article_id, user_id, case_study_index, study_site_location) |>
+  tidyr::separate_longer_delim(study_site_location, delim = ';') |>
+  dplyr::mutate(
+    study_site_location = stringr::str_trim(study_site_location),
+    # codes are entered with inconsistent zero-padding ("090" vs "90"), so
+    # they are compared numerically; codes longer than 3 digits (e.g. "0055")
+    # are ambiguous and set to NA so that they are flagged as wrong
+    location = dplyr::if_else(
+      grepl('^[0-9]{1,3}$', study_site_location),
+      suppressWarnings(as.numeric(study_site_location)),
+      NA_real_
+    )
+  )
 
+# Only codes listed in the reference table are kept. Rejected lines (including
+# missing locations) are saved for checking/correction in SysRev.
+valid_location_codes <- utils::read.csv(file.path(data_dir, 'location_code.csv'))$code
+wrong_location_codes <- case_study_locations |>
+  dplyr::filter(!location %in% valid_location_codes)
+saveRDS(wrong_location_codes, file.path(output_dir, 'wrong_location_codes.rds'))
+
+# Exact matching on the numeric code (not grepl), so that e.g. 90 does not
+# also count 290 or 190. Each case study is counted once per location.
 count_data <- data.frame(location = 0:400) |>
-  dplyr::left_join(data.frame(location = as.numeric(location_categories),
-                              n = mapply(function(x) sum(
-                                grepl(x, unlist(location_list))),
-                                location_categories)),
-                   by = 'location') |>
+  dplyr::left_join(
+    case_study_locations |>
+      dplyr::filter(location %in% valid_location_codes) |>
+      dplyr::distinct(article_id, user_id, case_study_index, location) |>
+      dplyr::count(location),
+    by = 'location'
+  ) |>
   dplyr::mutate(location = as.character(location))
 
 # categories for the picker_part_type input

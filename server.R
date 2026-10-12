@@ -526,7 +526,7 @@ server <- function(input, output) {
       ])+
       ggplot2::scale_fill_manual('', values = c(Known = "#08519C",
                                                 Other = 'grey'))+
-      ggplot2::xlab('Drivers of change')+
+      ggplot2::xlab('Activities and uses')+
       ggplot2::ylab('Number of case studies')+
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
@@ -569,7 +569,7 @@ server <- function(input, output) {
     part_type_categories <- data.frame(category = sort(c(
       "General public", "Art & culture sector", "Education sector",
       "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Public authorities, decision makers and managers",
+      "Other industries", "Decision makers",
       "NGOs", "Science & research", "Others", "Unclear"
     ))) |>
       dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~
@@ -646,7 +646,7 @@ server <- function(input, output) {
     part_type_categories <- data.frame(category = sort(c(
       "General public", "Art & culture sector", "Education sector",
       "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Public authorities, decision makers and managers",
+      "Other industries", "Decision makers",
       "NGOs", "Science & research", "Others", "Unclear"
     ))) |>
       dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~

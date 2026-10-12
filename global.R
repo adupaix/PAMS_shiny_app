@@ -40,6 +40,10 @@ eez_path <- file.path(data_dir, 'EEZ_land_union_v4_202410')
 lands_path <- file.path(data_dir, 'OSM_lands')
 regions_path <- file.path(data_dir, 'French_regions')
 
+# Output dir (generated artefacts, ignored by git): created at launch if missing
+output_dir <- 'outputs'
+if (!dir.exists(output_dir)) dir.create(output_dir, showWarnings = FALSE)
+
 # variables definition
 # update 28/09/2026
 n_to_code <- 804
