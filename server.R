@@ -60,16 +60,16 @@ server <- function(input, output) {
     # Green segment (included)
     if (pct_fully_display > 0) {
       gradient_stops <- c(gradient_stops, 
-                          paste0("#4caf50 0%"),
-                          paste0("#4caf50 ", pct_fully_display, "%"))
+                          paste0("#8BDBA1 0%"),
+                          paste0("#8BDBA1 ", pct_fully_display, "%"))
       current_pct <- pct_fully_display
     }
     
-    # Yellow segment (coded, included or not)
+    # Orange segment (coded, included or not)
     if (pct_partly_display > 0) {
       gradient_stops <- c(gradient_stops,
-                          paste0("#FBC02D ", current_pct, "%"),
-                          paste0("#FBC02D ", current_pct + pct_partly_display, "%"))
+                          paste0("#F9B58B ", current_pct, "%"),
+                          paste0("#F9B58B ", current_pct + pct_partly_display, "%"))
       current_pct <- current_pct + pct_partly_display
     }
     
@@ -99,6 +99,17 @@ server <- function(input, output) {
   })
   
   
+  # Number of articles coded per user (all reviews, from the raw SysRev
+  # exports re-downloaded when reload_data is triggered)
+  output$user_activity <- plotly::renderPlotly({
+    input$reload_data
+
+    plotly::ggplotly(user_activity_plot(data_dir), tooltip = 'text') |>
+      # ggplotly ignores legend.position: put the legend on top explicitly
+      plotly::layout(legend = list(orientation = 'h', x = 0.5,
+                                   xanchor = 'center', y = 1.05))
+  })
+
   # Reasons for excluding the articles
   output$piechart_excluded <- renderPlot({
     input$reload_data

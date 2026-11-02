@@ -54,6 +54,7 @@ data/*-user_answers.csv
 
 # ignore agents
 .github/agents/*
+.claude/*
 CLAUDE.md
 
 # ignore figures and quarto documents
