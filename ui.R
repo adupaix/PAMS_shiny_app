@@ -37,6 +37,8 @@ ui <- dashboardPage(
     sidebarMenu(
       # Tab where we can force data loading from sysrev
       # menuItem("Load data", tabName = "load", icon = icon('database')),
+      # Number of articles coded per user
+      menuItem("Users activity", tabName = "tab_users", icon = icon("user")),
       # Meta-data, results at the scale of the articles
       menuItem("Article-level variables", tabName = "tab_articles", icon = icon("chart-pie")),
       menuItem("Location and ecosystems", tabName = "tab_ecosystem", icon = icon("map")),
@@ -70,7 +72,19 @@ ui <- dashboardPage(
     # CSS for the progress bar
     tags$head(tags$style(HTML(progress_css))),
     tabItems(
-      
+
+      # ---- TAB 0: Users activity ----
+      tabItem(
+        tabName = "tab_users",
+        fluidRow(
+          box(
+            title = "Number of articles coded per user",
+            plotly::plotlyOutput("user_activity", height = "700px"),
+            width = 12
+          )
+        )
+      ),
+
       # ---- TAB 1: Articles level ----
       tabItem(
         tabName = "tab_articles",
@@ -91,7 +105,7 @@ ui <- dashboardPage(
               ),
               column(
                 width = 9,
-                plotOutput("area_papers_year")
+                plotOutput("bar_papers_year")
               )
             ),
             width = 12
@@ -103,7 +117,7 @@ ui <- dashboardPage(
             width = 7,
             div(
               box(title = "Reasons for excluding articles at full-text",
-                  plotOutput("piechart_excluded"),
+                  plotOutput("bar_excluded"),
                   div(p(
                     'There should not be any NA. Be carefull to fill the',
                     code('exclude_note'),

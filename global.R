@@ -17,6 +17,7 @@ library(ggplot2)
 library(ggVennDiagram)
 library(devtools)
 library(shinyWidgets)
+library(plotly)
 
 if (!'SLRtools' %in% installed.packages()){
   devtools::install_github("yutannihilation/ggsflabel")
@@ -31,6 +32,7 @@ library(ggradar)
 
 # source small functions
 source('R/utils.R')
+source('R/user_activity_plot.R')
 
 # Data dir
 data_dir <- 'data'
