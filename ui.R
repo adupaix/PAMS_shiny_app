@@ -105,7 +105,7 @@ ui <- dashboardPage(
               ),
               column(
                 width = 9,
-                plotOutput("area_papers_year")
+                plotOutput("bar_papers_year")
               )
             ),
             width = 12
@@ -117,7 +117,7 @@ ui <- dashboardPage(
             width = 7,
             div(
               box(title = "Reasons for excluding articles at full-text",
-                  plotOutput("piechart_excluded"),
+                  plotOutput("bar_excluded"),
                   div(p(
                     'There should not be any NA. Be carefull to fill the',
                     code('exclude_note'),

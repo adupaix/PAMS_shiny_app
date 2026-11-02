@@ -111,20 +111,24 @@ server <- function(input, output) {
   })
 
   # Reasons for excluding the articles
-  output$piechart_excluded <- renderPlot({
+  # (same plot as 01.exclusion_reasons.png in qmd/plot_workflow.qmd)
+  output$bar_excluded <- renderPlot({
     input$reload_data
-    
+
     ggplot2::ggplot(exclusion_reasons,
-                    ggplot2::aes(x = '',
-                                 y = n,
-                                 fill = exclude_note))+
-      ggplot2::geom_col()+
-      ggplot2::coord_polar(theta = "y")+
-      ggplot2::geom_text(ggplot2::aes(label = n),
+                    ggplot2::aes(x = exclude_note,
+                                 y = percent,
+                                 fill = exclude_note)) +
+      ggplot2::geom_col() +
+      ggplot2::geom_text(ggplot2::aes(label = sprintf("%.1f%%", percent)),
                          position = ggplot2::position_stack(vjust = 0.5)) +
-      ggplot2::scale_fill_viridis_d()+
-      ggplot2::theme_void()
-    
+      ggplot2::coord_flip() +
+      ggplot2::scale_y_continuous(
+        labels = scales::label_percent(scale = 1), limits = c(0, NA)
+      ) +
+      ggplot2::labs(x = "Exclusion reason", y = "Excluded articles (%)") +
+      ggplot2::theme_minimal() +
+      ggplot2::theme(legend.position = "none")
   })
   
   # Disciplines
@@ -211,8 +215,9 @@ server <- function(input, output) {
         axis.title.y = ggplot2::element_blank())
   })
   
-  # Area plot: number of papers per publication year, coloured by chosen variable
-  output$area_papers_year <- renderPlot({
+  # Stacked bar plot: number of papers per publication year, coloured by
+  # chosen variable
+  output$bar_papers_year <- renderPlot({
     input$reload_data
     req(input$picker_area_var)
     
@@ -253,20 +258,14 @@ server <- function(input, output) {
       fill_value = factor(fill_value, levels = fill_levels)
     ) |>
       dplyr::filter(!is.na(Publication.Year), !is.na(fill_value)) |>
-      dplyr::count(Publication.Year, fill_value) |>
-      # explicit zeros: without them geom_area interpolates linearly across
-      # missing year x category combinations and draws artefacts
-      tidyr::complete(
-        Publication.Year = tidyr::full_seq(Publication.Year, period = 1),
-        fill_value,
-        fill = list(n = 0)
-      )
-    
+      dplyr::count(Publication.Year, fill_value)
+
     ggplot2::ggplot(year_counts,
                     ggplot2::aes(x = Publication.Year,
                                  y = n,
                                  fill = fill_value)) +
-      ggplot2::geom_area(colour = "white", linewidth = 0.2) +
+      ggplot2::geom_col(colour = "white", linewidth = 0.2) +
+      ggplot2::scale_x_continuous(breaks = scales::breaks_pretty()) +
       plot_palette +
       ggplot2::xlab("Publication year") +
       ggplot2::ylab("Number of papers") +

@@ -74,9 +74,18 @@ n_included <- nrow(included_papers)
 n_excluded <- nrow(excluded_papers)
 
 # get exclusion reasons
+# (one article can have several ';'-separated reasons, so percentages are
+# relative to the number of excluded articles and may sum to > 100 %)
+# NOTE: NA reasons are kept on purpose so that missing exclude_note values
+# stay visible in the app
 exclusion_reasons <- excluded_papers |>
-  dplyr::count(exclude_note) |>
-  dplyr::arrange(n)
+  dplyr::select(project_id, article_id, exclude_note) |>
+  tidyr::separate_rows(exclude_note, sep = ";") |>
+  dplyr::mutate(exclude_note = stringr::str_trim(exclude_note)) |>
+  dplyr::filter(is.na(exclude_note) | exclude_note != "") |>
+  dplyr::distinct(project_id, article_id, exclude_note) |>
+  dplyr::count(exclude_note, name = "n_articles") |>
+  dplyr::mutate(percent = 100 * n_articles / nrow(excluded_papers))
 
 
 # Automatic correction: impact/lever/challenges
