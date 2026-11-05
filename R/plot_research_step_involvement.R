@@ -57,7 +57,7 @@ plot_research_step_involvement <- function(participant_data,
     # viridis palette (colour-blind friendly), reversed: dark = high level
     ggplot2::scale_fill_viridis_d("Involvement level", direction = -1) +
     ggplot2::xlab("Research step") +
-    ggplot2::ylab("Number of case study × involvement level") +
+    ggplot2::ylab("Number of case study \u00d7 involvement level") +
     ggplot2::theme(
       panel.background = ggplot2::element_rect(fill = "white",
                                                color = "black"),

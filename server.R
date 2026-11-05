@@ -170,69 +170,15 @@ server <- function(input, output) {
   # Venn diagram of ecosystems
   output$venn_ecosystem <- renderPlot({
     input$reload_data
-    
-    venn_ecosystem <- list(
-      Land = grep('Land \\(coastal\\)',
-                  case_study_data$ecosystem_main),
-      Coastal = grep('Coastal ocean',
-                     case_study_data$ecosystem_main),
-      `Open Ocean` = grep('Open-ocean',
-                          case_study_data$ecosystem_main)
-    )
-    
-    ggVennDiagram::ggVennDiagram(venn_ecosystem, lwd = 0)+
-      ggplot2::scale_fill_gradient(low = "#F4FAFE", high = "#4981BF") +
-      ggplot2::theme(legend.position = 'none')
+
+    plot_ecosystems_venn(case_study_data)
   })
   
   # Bar plot of habitats
   output$bar_habitat <- plotly::renderPlotly({
     input$reload_data
-    
-    habitat_list <- lapply(strsplit(case_study_data$vulnerable_habitat, ';'),
-                           stringr::str_trim)
-    habitat_categories <- data.frame(category =
-                                       c(
-                                         'Coastal saltmarshes', 'Deltas', 'Mangroves',
-                                         'Coastal lagoons', 'Other littoral ecosystems',
-                                         
-                                         "Kelp forests", "Tropical coral reef",
-                                         'Cold & temperate coral & sponge ecosystems',
-                                         'Rhodolith/Maërl beds',
-                                         'Seagrass meadows', 'Shellfish beds',
-                                         'Other continental shelf ecosystems',
-                                         
-                                         'Submarine canyons', 'Seamounts',
-                                         'Other deep-sea ecosystems', 'None'),
-                                     color = c(rep('Land', 5),
-                                               rep('Coastal', 7),
-                                               rep('Open-ocean', 3),
-                                               'None'))
-    habitat_df <- data.frame(habitat = habitat_categories$category,
-                             color = habitat_categories$color) |>
-      dplyr::mutate(nb_case_studies = sapply(habitat_categories$category,
-                                             function(x) length(grep(x,habitat_list))))
-    
-    p_habitat <- ggplot2::ggplot(habitat_df,
-                                 ggplot2::aes(x = habitat,
-                                              y = nb_case_studies,
-                                              fill = color))+
-      ggplot2::geom_bar(stat = 'identity')+
-      ggplot2::coord_flip()+
-      ggplot2::scale_x_discrete(limits=habitat_categories$category[
-        length(habitat_categories$category):1
-      ])+
-      ggplot2::scale_fill_manual('', values = c(Coastal = "#3182BD",
-                                            Land = "#6BAED6",
-                                            `Open-ocean` = "#08519C",
-                                            None = 'grey'))+
-      ggplot2::xlab('Habitats')+
-      ggplot2::ylab('Number of case studies')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        panel.grid.major = ggplot2::element_line(color = 'grey'))
 
-    plotly::ggplotly(p_habitat)
+    plotly::ggplotly(plot_habitats(case_study_data))
   })
   
   # Map of study sites in the Hexagone
@@ -291,92 +237,15 @@ server <- function(input, output) {
   # Bar plot of drivers of change
   output$bar_drivers <- plotly::renderPlotly({
     input$reload_data
-    
-    drivers_list <- lapply(strsplit(case_study_data$drivers_of_change, ';'),
-                           stringr::str_trim)
-    drivers_categories <- data.frame(category = c(
-      'Climate change', 'Exploitation \\(living resources\\)',
-      'Pollution', 'Land/Sea use changes', 'Invasive alien species and disease',
-      
-      'Governance issues', 'Demographic', 'Economics', 'Technological', 'Crises',
-      
-      'Others', 'Unspecified', 'Unrelevant'),
-      color = c(rep('Primary', 5),
-                rep('Secondary', 5),
-                rep('None', 3)))
-    
-    drivers_df <- data.frame(driver = drivers_categories$category,
-                             color = drivers_categories$color) |>
-      dplyr::mutate(nb_case_studies = sapply(drivers_categories$category,
-                                             function(x) length(grep(x,drivers_list))))
-    
-    p_drivers <- ggplot2::ggplot(drivers_df,
-                                 ggplot2::aes(x = driver,
-                                              y = nb_case_studies,
-                                              fill = color))+
-      ggplot2::geom_bar(stat = 'identity')+
-      ggplot2::coord_flip()+
-      ggplot2::scale_x_discrete(limits=drivers_categories$category[
-        length(drivers_categories$category):1
-      ])+
-      ggplot2::scale_fill_manual('', values = c(Primary = "#6BAED6",
-                                                Secondary = "#08519C",
-                                                None = 'grey'))+
-      ggplot2::xlab('Drivers of change')+
-      ggplot2::ylab('Number of case studies')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        panel.grid.major = ggplot2::element_line(color = 'grey'))
 
-    plotly::ggplotly(p_drivers)
+    plotly::ggplotly(plot_drivers_of_change(case_study_data))
   })
   
   # Bar plot of activities and uses
   output$bar_activities <- plotly::renderPlotly({
     input$reload_data
-    
-    activities_list <- lapply(strsplit(case_study_data$activities_and_uses, ';'),
-                              stringr::str_trim)
-    activities_categories <- data.frame(category = sort(c(
-      "Aquaculture", "Commercial and subsistence fishing",
-      "Marine Renewable Energy (MRE)", "Extractive activities (non-living)",
-      "Ports and shipping", "Recreational activities",
-      "Conservation activities", "Coastal land uses and infrastructures",
-      "Ocean literacy", "Public policy and regulation",
-      "Cultural and territorial identity contributions",
-      "Marine geoengineering", "Other activities and uses",
-      "Unclear", "None"
-    ))) |>
-      dplyr::mutate(color = dplyr::case_when(category %in% c('None', 'Unclear',
-                                                             'Other activities and uses') ~
-                                               'Other',
-                                             T ~ 'Known'))
-    
-    activities_df <- data.frame(activity = activities_categories$category,
-                                color = activities_categories$color) |>
-      dplyr::mutate(nb_case_studies = sapply(activities_categories$category,
-                                             function(x) length(grep(x,activities_list,
-                                                                     fixed = T))))
-    
-    p_activities <- ggplot2::ggplot(activities_df,
-                                    ggplot2::aes(x = activity,
-                                                 y = nb_case_studies,
-                                                 fill = color))+
-      ggplot2::geom_bar(stat = 'identity')+
-      ggplot2::coord_flip()+
-      ggplot2::scale_x_discrete(limits=activities_categories$category[
-        length(activities_categories$category):1
-      ])+
-      ggplot2::scale_fill_manual('', values = c(Known = "#08519C",
-                                                Other = 'grey'))+
-      ggplot2::xlab('Activities and uses')+
-      ggplot2::ylab('Number of case studies')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        panel.grid.major = ggplot2::element_line(color = 'grey'),
-        legend.position = 'none')
 
-    plotly::ggplotly(p_activities)
+    plotly::ggplotly(plot_activities_and_uses(case_study_data))
   })
   
   # Radar participant inclusivity

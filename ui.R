@@ -182,7 +182,7 @@ ui <- dashboardPage(
                              tags$li(strong("Unclear:"),
                                      "Objectives are not stated or are not clearly stated.")
                            ),
-                           p('The total number of articles on the following graphs can be above the number of included articles since one article can have multiple associated engagement objectives.')
+                           p('Percentages on the following graphs can sum to more than 100 % since one article can have several engagement objectives.')
                            ))
                 ),
                 column(width = 9,

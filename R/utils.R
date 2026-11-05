@@ -42,7 +42,7 @@ split_duplicate_rows <- function(data,
   
   # Process the split column
   data <- data |>
-    # Split rows on separator — duplicates all other columns automatically
+    # Split rows on separator: duplicates all other columns automatically
     tidyr::separate_rows(dplyr::all_of(split_col), sep = sep) |>
     # Trim whitespace
     dplyr::mutate(dplyr::across(dplyr::all_of(split_col), stringr::str_trim))

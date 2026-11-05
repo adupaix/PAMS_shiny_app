@@ -24,6 +24,14 @@
 #' - `area_levels`: level order of each variable of `area_choices`.
 #' - `discipline_levels`: values of `article_discipline` (Venn sets A, B, C).
 #' - `author_role_levels`: values of `leader_authors`.
+#' - `ecosystem_levels`: values of `ecosystem_main` shown on the ecosystem
+#'   Venn diagram (names = set labels; "Unclear" is not plotted).
+#' - `habitat_levels`, `habitat_groups`: values of `vulnerable_habitat` and
+#'   their ecosystem (Land / Coastal / Open-ocean / None, used as colour).
+#' - `driver_levels`, `driver_groups`: values of `drivers_of_change` and
+#'   their type (Primary / Secondary / None, used as colour).
+#' - `activity_levels`, `activity_other`: values of `activities_and_uses`
+#'   and the ones drawn in grey.
 #'
 #' @name categories
 #' @export
@@ -89,3 +97,62 @@ discipline_levels <- c(
 #' @rdname categories
 #' @export
 author_role_levels <- c("Leader", "Participant", "Observer")
+
+#' @rdname categories
+#' @export
+ecosystem_levels <- c(
+  "Land"       = "Land (coastal)",
+  "Coastal"    = "Coastal ocean",
+  "Open Ocean" = "Open-ocean"
+)
+
+#' @rdname categories
+#' @export
+habitat_levels <- c(
+  "Coastal saltmarshes", "Deltas", "Mangroves", "Coastal lagoons",
+  "Other littoral ecosystems",
+  "Kelp forests", "Tropical coral reef",
+  "Cold & temperate coral & sponge ecosystems", "Rhodolith/Ma\u00ebrl beds",
+  "Seagrass meadows", "Shellfish beds", "Other continental shelf ecosystems",
+  "Submarine canyons", "Seamounts", "Other deep-sea ecosystems",
+  "None"
+)
+
+#' @rdname categories
+#' @export
+habitat_groups <- stats::setNames(
+  c(rep("Land", 5), rep("Coastal", 7), rep("Open-ocean", 3), "None"),
+  habitat_levels
+)
+
+#' @rdname categories
+#' @export
+driver_levels <- c(
+  "Climate change", "Exploitation (living resources)", "Pollution",
+  "Land/Sea use changes", "Invasive alien species and disease",
+  "Governance issues", "Demographic", "Economics", "Technology", "Crises",
+  "Others", "Unspecified", "Unrelevant"
+)
+
+#' @rdname categories
+#' @export
+driver_groups <- stats::setNames(
+  c(rep("Primary", 5), rep("Secondary", 5), rep("None", 3)),
+  driver_levels
+)
+
+#' @rdname categories
+#' @export
+activity_levels <- c(
+  "Aquaculture", "Coastal land uses and infrastructures",
+  "Commercial and subsistence fishing", "Conservation activities",
+  "Cultural and territorial identity contributions",
+  "Extractive activities (non-living)", "Marine geoengineering",
+  "Marine Renewable Energy (MRE)", "None", "Ocean literacy",
+  "Other activities and uses", "Ports and shipping",
+  "Public policy and regulation", "Recreational activities", "Unclear"
+)
+
+#' @rdname categories
+#' @export
+activity_other <- c("None", "Unclear", "Other activities and uses")
