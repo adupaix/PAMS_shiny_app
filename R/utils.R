@@ -1,12 +1,14 @@
-#'#***************************************************************************
-#'@author : Amael DUPAIX
-#'@update : 2026-08-03
-#'@email : amael.dupaix@ird.fr
-#'#***************************************************************************
-#'@description: Functions for the shiny app
+#' @title Format and correct the engagement objectives of one article
+#' @author Amaël Dupaix (amael.dupaix@ird.fr)
 #'
-#'#***************************************************************************
-
+#' @description
+#' Trims the engagement objectives coded for one article and drops "Unclear"
+#' when at least one other objective is coded.
+#'
+#' @param x character vector of the objectives coded for one article (one
+#'   element of `strsplit(engagement_objectives, ";")`)
+#' @return character vector of the corrected objectives
+#' @export
 format_and_correct_objectives <- function(x){
   x <- stringr::str_trim(x)
   if (length(x) > 1 && 'Unclear' %in% x){
@@ -15,6 +17,19 @@ format_and_correct_objectives <- function(x){
   return(x)
 }
 
+#' @title Split a multi-valued column into one row per value
+#' @author Amaël Dupaix (amael.dupaix@ird.fr)
+#'
+#' @description
+#' Splits `split_col` on `sep` into one row per value (all other columns are
+#' duplicated) and trims whitespace around the values.
+#'
+#' @param data data frame
+#' @param split_col name of the column to split
+#' @param sep separator between values in `split_col`
+#' @param trim_whitespace currently not used: whitespace is always trimmed
+#' @return `data` with one row per value of `split_col`
+#' @export
 split_duplicate_rows <- function(data,
                                  split_col,
                                  sep = ";",
@@ -37,8 +52,10 @@ split_duplicate_rows <- function(data,
   return(data)
 }
 
-#' Count the rows coded with each category of a multi-valued variable
+#' @title Count the rows coded with each category of a multi-valued variable
+#' @author Amaël Dupaix (amael.dupaix@ird.fr)
 #'
+#' @description
 #' Splits each value of `x` on `sep`, trims whitespace and counts, for each
 #' category, the number of elements of `x` containing it. Matching is exact:
 #' "Others" does not match "Other industries", and labels containing regex

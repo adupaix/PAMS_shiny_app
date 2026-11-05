@@ -582,27 +582,8 @@ server <- function(input, output) {
   # Radar participant inclusivity
   output$radar_inclusivity <- renderPlot({
     input$reload_data
-    
-    inclusivity_categories <- c('Gender', 'Ethnic', 'Age', 'Nationality', 'None')
-    radar_data <- data.frame(group = 1)
-    for (i in 1:length(inclusivity_categories)){
-      radar_data <- radar_data |>
-        dplyr::mutate(!!rlang::sym(inclusivity_categories[i]) :=
-                        100 * length(grep(inclusivity_categories[i],
-                                          participant_data$participant_inclusivity)) / nrow(participant_data))
-    }
-    names(radar_data) <- c("group",
-                           paste0(names(radar_data[2:ncol(radar_data)]),
-                                  '\n',
-                                  round(radar_data[1,2:ncol(radar_data)]), '%'))
-    
-    
-    ggradar::ggradar(radar_data,
-                     group.point.size = 1,
-                     group.line.width = 1,
-                     axis.label.size = 3,
-                     background.circle.colour = 'white',
-                     gridline.mid.colour = "grey")
+
+    plot_participant_inclusivity(participant_data)
   })
   
   # Barplot participant type
@@ -615,92 +596,17 @@ server <- function(input, output) {
   # Barplot research step and involvement level
   output$bar_step_involvement <- plotly::renderPlotly({
     input$reload_data
-    
-    # Coding unit = case study x research step x involvement level: several
-    # participant types/groups with the same step and level count once.
-    # Steps and levels are not linked in the coding book, so a participant
-    # group with several steps and several levels contributes every pair.
-    developed_data <- participant_data |>
-      dplyr::filter(involvement_level != 'No implication') |>
-      dplyr::select(article_id, user_id, case_study_index,
-                    participant_type, research_step, involvement_level) |>
-      split_duplicate_rows(split_col = 'participant_type', sep = ';') |>
-      # filter on participant type BEFORE deduplicating
-      dplyr::filter(participant_type %in% input$picker_part_types) |>
-      # cross step x level within each participant group, then deduplicate
-      split_duplicate_rows(split_col = 'research_step', sep = ';') |>
-      split_duplicate_rows(split_col = 'involvement_level', sep = ';') |>
-      dplyr::distinct(article_id, user_id, case_study_index,
-                      research_step, involvement_level) |>
-      dplyr::mutate(involvement_level = factor(involvement_level,
-                                               levels = c(
-                                                 'Fully-lead',
-                                                 'Involve/Collaborate',
-                                                 'Consult', 'Inform',
-                                                 'Unclear'
-                                               )),
-                    research_step = factor(research_step,
-                                           levels = c(
-                                             'Design', 'Collect',
-                                             'Analyze', 'Evaluate',
-                                             'Disseminate', 'Unclear'
-                                           )))
 
-    p_step_involvement <- ggplot2::ggplot(developed_data,
-                                          ggplot2::aes(x = research_step,
-                                                       fill = involvement_level))+
-      ggplot2::geom_bar()+
-      ggplot2::scale_fill_viridis_d('Involvement level', direction = -1)+
-      ggplot2::xlab('Research step')+
-      ggplot2::ylab('Number of case study × involvement level')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        panel.grid.major = ggplot2::element_line(color = 'grey'))
-
-    plotly::ggplotly(p_step_involvement)
+    plotly::ggplotly(plot_research_step_involvement(
+      participant_data, part_types = input$picker_part_types
+    ))
   })
   
   # Barplot involvement iteration per participant type
   output$bar_iter_part_type <- plotly::renderPlotly({
     input$reload_data
-    
-    part_type_list <- lapply(strsplit(participant_data$participant_type, ';'),
-                             stringr::str_trim)
-    # TODO: convert to a plot function (refactor batch); shared category
-    # list used meanwhile so that the renamed "Decision makers and managers"
-    # label is still matched
-    part_type_categories <- data.frame(category = participant_type_levels)
 
-    part_type_iter_df <- data.frame(
-      part_type = part_type_categories$category
-    ) |>
-      dplyr::mutate(
-        nb_part_type = sapply(part_type_categories$category,
-                              function(x) length(grep(x, part_type_list, fixed = T))),
-        nb_iterative = sapply(part_type_categories$category,
-                              function(x) sum(grepl(x, part_type_list, fixed = T) &
-                                                participant_data$involvement_iteration)),
-        pct_iterative = dplyr::if_else(nb_part_type == 0,
-                                       0,
-                                       100 * nb_iterative / nb_part_type)
-      )
-    
-    p_iter_part_type <- ggplot2::ggplot(part_type_iter_df,
-                                        ggplot2::aes(x = part_type,
-                                                     y = pct_iterative)) +
-      ggplot2::geom_bar(stat = 'identity', fill = 'grey') +
-      ggplot2::coord_flip() +
-      ggplot2::scale_x_discrete(limits = part_type_categories$category[
-        length(part_type_categories$category):1
-      ]) +
-      ggplot2::xlab('Participant type') +
-      ggplot2::ylab('% of iterative involvement') +
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        panel.grid.major = ggplot2::element_line(color = 'grey'),
-        legend.position = 'none')
-
-    plotly::ggplotly(p_iter_part_type)
+    plotly::ggplotly(plot_participant_iteration(participant_data))
   })
   
   

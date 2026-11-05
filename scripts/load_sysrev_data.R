@@ -8,10 +8,10 @@
 #'#***************************************************************************
 
 if(reload_data ||
-   !file.exists(file.path('data',
+   !file.exists(file.path(data_dir,
                           paste0(Sys.Date(), '-user_answers.csv')))){
-  
-  file.remove(list.files('data', pattern = '-user_answers.csv',
+
+  file.remove(list.files(data_dir, pattern = '-user_answers.csv',
                          full.names = TRUE))
   
   project_ids <- as.numeric(
