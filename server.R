@@ -112,13 +112,13 @@ server <- function(input, output) {
 
   # Reasons for excluding the articles
   # (same plot as 01.exclusion_reasons.png in qmd/plot_workflow.qmd)
-  output$bar_excluded <- renderPlot({
+  output$bar_excluded <- plotly::renderPlotly({
     input$reload_data
 
-    ggplot2::ggplot(exclusion_reasons,
-                    ggplot2::aes(x = exclude_note,
-                                 y = percent,
-                                 fill = exclude_note)) +
+    p_excluded <- ggplot2::ggplot(exclusion_reasons,
+                                  ggplot2::aes(x = exclude_note,
+                                               y = percent,
+                                               fill = exclude_note)) +
       ggplot2::geom_col() +
       ggplot2::geom_text(ggplot2::aes(label = sprintf("%.1f%%", percent)),
                          position = ggplot2::position_stack(vjust = 0.5)) +
@@ -129,6 +129,8 @@ server <- function(input, output) {
       ggplot2::labs(x = "Exclusion reason", y = "Excluded articles (%)") +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "none")
+
+    plotly::ggplotly(p_excluded)
   })
   
   # Disciplines
@@ -173,7 +175,7 @@ server <- function(input, output) {
   })
   
   # Impacts / levers / challenges variables
-  output$bar_impacts <- renderPlot({
+  output$bar_impacts <- plotly::renderPlotly({
     input$reload_data
     
     impact_lever_chal <- dplyr::bind_rows(
@@ -201,9 +203,9 @@ server <- function(input, output) {
     impact_lever_chal |>
       dplyr::select(var, value, n)
     
-    ggplot2::ggplot(impact_lever_chal,
-                    ggplot2::aes(x = var, y = n,
-                                 fill = value_plot))+
+    p_impacts <- ggplot2::ggplot(impact_lever_chal,
+                                 ggplot2::aes(x = var, y = n,
+                                              fill = value_plot))+
       ggplot2::geom_bar(stat = 'identity')+
       ggplot2::scale_fill_discrete('Coded\nvalue',
                                    palette = 'Blues')+
@@ -213,11 +215,13 @@ server <- function(input, output) {
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'),
         axis.title.y = ggplot2::element_blank())
+
+    plotly::ggplotly(p_impacts)
   })
   
   # Stacked bar plot: number of papers per publication year, coloured by
   # chosen variable
-  output$bar_papers_year <- renderPlot({
+  output$bar_papers_year <- plotly::renderPlotly({
     input$reload_data
     req(input$picker_area_var)
     
@@ -260,10 +264,10 @@ server <- function(input, output) {
       dplyr::filter(!is.na(Publication.Year), !is.na(fill_value)) |>
       dplyr::count(Publication.Year, fill_value)
 
-    ggplot2::ggplot(year_counts,
-                    ggplot2::aes(x = Publication.Year,
-                                 y = n,
-                                 fill = fill_value)) +
+    p_papers_year <- ggplot2::ggplot(year_counts,
+                                     ggplot2::aes(x = Publication.Year,
+                                                  y = n,
+                                                  fill = fill_value)) +
       ggplot2::geom_col(colour = "white", linewidth = 0.2) +
       ggplot2::scale_x_continuous(breaks = scales::breaks_pretty()) +
       plot_palette +
@@ -272,11 +276,13 @@ server <- function(input, output) {
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = "white", color = "black"),
         panel.grid.major = ggplot2::element_line(color = "grey"))
+
+    plotly::ggplotly(p_papers_year)
   })
   
   ## Engagement objectives plots
   # a. plot with coarse categories
-  output$bar_engage_large <- renderPlot({
+  output$bar_engage_large <- plotly::renderPlotly({
     input$reload_data
 
     objective_list <- lapply(strsplit(included_papers$engagement_objectives, ';'),
@@ -290,10 +296,10 @@ server <- function(input, output) {
                                          function(x) length(grep(x,objective_list))))
 
 
-    ggplot2::ggplot(main_objectives_df,
-                    ggplot2::aes(x = objective,
-                                 y = nb_articles,
-                                 fill = objective))+
+    p_engage_large <- ggplot2::ggplot(main_objectives_df,
+                                      ggplot2::aes(x = objective,
+                                                   y = nb_articles,
+                                                   fill = objective))+
       ggplot2::geom_bar(stat='identity')+
       ggplot2::scale_fill_brewer(palette = 'Set1')+
       ggplot2::coord_flip()+
@@ -304,10 +310,12 @@ server <- function(input, output) {
         fill = 'white', color = 'black'),
         legend.position = 'none',
         panel.grid.major = ggplot2::element_line(color = 'grey'))
+
+    plotly::ggplotly(p_engage_large)
   })
   
   #b. plot with detailed categories
-  output$bar_engage_detail <- renderPlot({
+  output$bar_engage_detail <- plotly::renderPlotly({
     input$reload_data
     
     objective_list <- lapply(strsplit(included_papers$engagement_objectives, ';'),
@@ -320,10 +328,10 @@ server <- function(input, output) {
       dplyr::mutate(nb_articles = sapply(objective_categories,
                                          function(x) length(grep(x,objective_list))))
     
-    ggplot2::ggplot(objectives_df,
-                    ggplot2::aes(x = objective,
-                                 y = nb_articles,
-                                 fill = main_objectives))+
+    p_engage_detail <- ggplot2::ggplot(objectives_df,
+                                       ggplot2::aes(x = objective,
+                                                    y = nb_articles,
+                                                    fill = main_objectives))+
       ggplot2::geom_bar(stat='identity')+
       ggplot2::scale_fill_brewer(palette = 'Set1')+
       ggplot2::coord_flip()+
@@ -334,7 +342,8 @@ server <- function(input, output) {
         fill = 'white', color = 'black'),
         legend.position = 'none',
         panel.grid.major = ggplot2::element_line(color = 'grey'))
-    
+
+    plotly::ggplotly(p_engage_detail)
   })
   
   # Venn diagram of ecosystems
@@ -356,7 +365,7 @@ server <- function(input, output) {
   })
   
   # Bar plot of habitats
-  output$bar_habitat <- renderPlot({
+  output$bar_habitat <- plotly::renderPlotly({
     input$reload_data
     
     habitat_list <- lapply(strsplit(case_study_data$vulnerable_habitat, ';'),
@@ -383,10 +392,10 @@ server <- function(input, output) {
       dplyr::mutate(nb_case_studies = sapply(habitat_categories$category,
                                              function(x) length(grep(x,habitat_list))))
     
-    ggplot2::ggplot(habitat_df,
-                    ggplot2::aes(x = habitat,
-                                 y = nb_case_studies,
-                                 fill = color))+
+    p_habitat <- ggplot2::ggplot(habitat_df,
+                                 ggplot2::aes(x = habitat,
+                                              y = nb_case_studies,
+                                              fill = color))+
       ggplot2::geom_bar(stat = 'identity')+
       ggplot2::coord_flip()+
       ggplot2::scale_x_discrete(limits=habitat_categories$category[
@@ -401,7 +410,8 @@ server <- function(input, output) {
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'))
-    
+
+    plotly::ggplotly(p_habitat)
   })
   
   # Map of study sites in the Hexagone
@@ -458,7 +468,7 @@ server <- function(input, output) {
   })
   
   # Bar plot of drivers of change
-  output$bar_drivers <- renderPlot({
+  output$bar_drivers <- plotly::renderPlotly({
     input$reload_data
     
     drivers_list <- lapply(strsplit(case_study_data$drivers_of_change, ';'),
@@ -479,10 +489,10 @@ server <- function(input, output) {
       dplyr::mutate(nb_case_studies = sapply(drivers_categories$category,
                                              function(x) length(grep(x,drivers_list))))
     
-    ggplot2::ggplot(drivers_df,
-                    ggplot2::aes(x = driver,
-                                 y = nb_case_studies,
-                                 fill = color))+
+    p_drivers <- ggplot2::ggplot(drivers_df,
+                                 ggplot2::aes(x = driver,
+                                              y = nb_case_studies,
+                                              fill = color))+
       ggplot2::geom_bar(stat = 'identity')+
       ggplot2::coord_flip()+
       ggplot2::scale_x_discrete(limits=drivers_categories$category[
@@ -496,10 +506,12 @@ server <- function(input, output) {
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'))
+
+    plotly::ggplotly(p_drivers)
   })
   
   # Bar plot of activities and uses
-  output$bar_activities <- renderPlot({
+  output$bar_activities <- plotly::renderPlotly({
     input$reload_data
     
     activities_list <- lapply(strsplit(case_study_data$activities_and_uses, ';'),
@@ -525,10 +537,10 @@ server <- function(input, output) {
                                              function(x) length(grep(x,activities_list,
                                                                      fixed = T))))
     
-    ggplot2::ggplot(activities_df,
-                    ggplot2::aes(x = activity,
-                                 y = nb_case_studies,
-                                 fill = color))+
+    p_activities <- ggplot2::ggplot(activities_df,
+                                    ggplot2::aes(x = activity,
+                                                 y = nb_case_studies,
+                                                 fill = color))+
       ggplot2::geom_bar(stat = 'identity')+
       ggplot2::coord_flip()+
       ggplot2::scale_x_discrete(limits=activities_categories$category[
@@ -542,6 +554,8 @@ server <- function(input, output) {
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'),
         legend.position = 'none')
+
+    plotly::ggplotly(p_activities)
   })
   
   # Radar participant inclusivity
@@ -571,7 +585,7 @@ server <- function(input, output) {
   })
   
   # Barplot participant type
-  output$bar_part_type <- renderPlot({
+  output$bar_part_type <- plotly::renderPlotly({
     input$reload_data
     
     part_type_list <- lapply(strsplit(participant_data$participant_type, ';'),
@@ -592,10 +606,10 @@ server <- function(input, output) {
                                           function(x) length(grep(x,part_type_list,
                                                                   fixed = T))))
     
-    ggplot2::ggplot(part_type_df,
-                    ggplot2::aes(x = part_type,
-                                 y = nb_part_type,
-                                 fill = color))+
+    p_part_type <- ggplot2::ggplot(part_type_df,
+                                   ggplot2::aes(x = part_type,
+                                                y = nb_part_type,
+                                                fill = color))+
       ggplot2::geom_bar(stat = 'identity')+
       ggplot2::coord_flip()+
       ggplot2::scale_x_discrete(limits=part_type_categories$category[
@@ -609,10 +623,12 @@ server <- function(input, output) {
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'),
         legend.position = 'none')
+
+    plotly::ggplotly(p_part_type)
   })
   
   # Barplot research step and involvement level
-  output$bar_step_involvement <- renderPlot({
+  output$bar_step_involvement <- plotly::renderPlotly({
     input$reload_data
     
     developed_data <- participant_data |>
@@ -636,8 +652,9 @@ server <- function(input, output) {
                                            ))) |>
       dplyr::filter(participant_type %in% input$picker_part_types)
     
-    ggplot2::ggplot(developed_data, ggplot2::aes(x = research_step,
-                                                 fill = involvement_level))+
+    p_step_involvement <- ggplot2::ggplot(developed_data,
+                                          ggplot2::aes(x = research_step,
+                                                       fill = involvement_level))+
       ggplot2::geom_bar()+
       ggplot2::scale_fill_viridis_d('Involvement level', direction = -1)+
       ggplot2::xlab('Research step')+
@@ -645,10 +662,12 @@ server <- function(input, output) {
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'))
+
+    plotly::ggplotly(p_step_involvement)
   })
   
   # Barplot involvement iteration per participant type
-  output$bar_iter_part_type <- renderPlot({
+  output$bar_iter_part_type <- plotly::renderPlotly({
     input$reload_data
     
     part_type_list <- lapply(strsplit(participant_data$participant_type, ';'),
@@ -677,9 +696,9 @@ server <- function(input, output) {
                                        100 * nb_iterative / nb_part_type)
       )
     
-    ggplot2::ggplot(part_type_iter_df,
-                    ggplot2::aes(x = part_type,
-                                 y = pct_iterative)) +
+    p_iter_part_type <- ggplot2::ggplot(part_type_iter_df,
+                                        ggplot2::aes(x = part_type,
+                                                     y = pct_iterative)) +
       ggplot2::geom_bar(stat = 'identity', fill = 'grey') +
       ggplot2::coord_flip() +
       ggplot2::scale_x_discrete(limits = part_type_categories$category[
@@ -691,8 +710,8 @@ server <- function(input, output) {
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'),
         legend.position = 'none')
-    
-    
+
+    plotly::ggplotly(p_iter_part_type)
   })
   
   

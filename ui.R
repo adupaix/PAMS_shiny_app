@@ -105,7 +105,7 @@ ui <- dashboardPage(
               ),
               column(
                 width = 9,
-                plotOutput("bar_papers_year")
+                plotly::plotlyOutput("bar_papers_year")
               )
             ),
             width = 12
@@ -117,7 +117,7 @@ ui <- dashboardPage(
             width = 7,
             div(
               box(title = "Reasons for excluding articles at full-text",
-                  plotOutput("bar_excluded"),
+                  plotly::plotlyOutput("bar_excluded"),
                   div(p(
                     'There should not be any NA. Be carefull to fill the',
                     code('exclude_note'),
@@ -153,7 +153,7 @@ ui <- dashboardPage(
             width = 7,
             div(
               box(title = "Impact / levers / challenges",
-                  plotOutput("bar_impacts"),
+                  plotly::plotlyOutput("bar_impacts"),
                   width = 12)
             )
             
@@ -187,9 +187,9 @@ ui <- dashboardPage(
                 ),
                 column(width = 9,
                        div(style = 'margin-bottom = 20px;',
-                         plotOutput("bar_engage_large")),
+                         plotly::plotlyOutput("bar_engage_large")),
                        div(
-                         plotOutput("bar_engage_detail")
+                         plotly::plotlyOutput("bar_engage_detail")
                        )
                 )
               ),
@@ -214,7 +214,7 @@ ui <- dashboardPage(
             width = 7,
             div(
               box(title = "Studied habitats in the corpus",
-                  plotOutput("bar_habitat"),
+                  plotly::plotlyOutput("bar_habitat"),
                   width = 12)
             )
             
@@ -257,7 +257,7 @@ ui <- dashboardPage(
             width = 6,
             div(
               box(title = "Drivers of change",
-                  plotOutput('bar_drivers'),
+                  plotly::plotlyOutput('bar_drivers'),
                   width = 12)
             )
           ),
@@ -265,7 +265,7 @@ ui <- dashboardPage(
             width = 6,
             div(
               box(title = "Activities and uses",
-                  plotOutput('bar_activities'),
+                  plotly::plotlyOutput('bar_activities'),
                   width = 12)
             )
           )
@@ -280,7 +280,7 @@ ui <- dashboardPage(
             width = 8,
             div(
               box(title = 'Participant type',
-                  plotOutput('bar_part_type'),
+                  plotly::plotlyOutput('bar_part_type'),
                   width = 12
               )
             )
@@ -289,7 +289,7 @@ ui <- dashboardPage(
             width = 4,
             div(
               box(title = 'Involvement iteration per participant type',
-                  plotOutput('bar_iter_part_type'),
+                  plotly::plotlyOutput('bar_iter_part_type'),
                   width = 12
               )
             )
@@ -317,7 +317,7 @@ ui <- dashboardPage(
                            )
                     ),
                     column(width = 9,
-                           plotOutput('bar_step_involvement')
+                           plotly::plotlyOutput('bar_step_involvement')
                     )
                   ),
                   width = 12
