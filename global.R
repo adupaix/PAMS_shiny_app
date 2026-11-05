@@ -50,25 +50,7 @@ if (!dir.exists(output_dir)) dir.create(output_dir, showWarnings = FALSE)
 # update 28/09/2026
 n_to_code <- 804
 
-# Choices and level order for the "papers per year" area plot
-# (names = labels shown in the pickerInput)
-area_choices <- c(
-  "Impact evaluation"          = "impact_evaluation",
-  "Levers"                     = "levers",
-  "Challenges"                 = "challenges",
-  "Participants definition"    = "has_participant_definition",
-  "Approach definition"        = "has_approach_definition"
-)
-
-# Ordinal order of the coded values (raw values, not merged categories)
-depth_levels <- c("No", "Mentioned", "Discussed", "Evaluated", "Detailed")
-area_levels <- list(
-  impact_evaluation          = depth_levels,
-  levers                     = depth_levels,
-  challenges                 = depth_levels,
-  has_participant_definition = c("FALSE", "TRUE"),
-  has_approach_definition    = c("FALSE", "TRUE")
-)
+# area_choices, depth_levels and area_levels are defined in R/categories.R
 
 # source file that loads and formats sysrev data
 source('scripts/load_sysrev_data.R')

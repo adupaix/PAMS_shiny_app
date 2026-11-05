@@ -1,14 +1,9 @@
-#'#***************************************************************************
-#'@author : Amael DUPAIX
-#'@update : 2026-11-02
-#'@email : amael.dupaix@ird.fr
-#'#***************************************************************************
-#'@description: function building a bar plot of the number of articles coded
-#' per user (Include / Exclude), similar to the SysRev "Member Activity" panel.
-#'
-#'#***************************************************************************
-
-#' Bar plot of the number of articles coded per user
+#' @title Bar plot of the number of articles coded per user
+#' @author Amaël Dupaix (amael.dupaix@ird.fr)
+#' 
+#' @description
+#' Number of articles coded per user (Include / Exclude), similar to the
+#' SysRev "Member Activity" panel.
 #'
 #' Input: the raw SysRev parquet exports downloaded by scripts/load_sysrev_data.R
 #' (data_dir/proj_*/user-answers.parquet and labels.parquet). These are used
@@ -25,7 +20,8 @@
 #'   export folders
 #' @param user_names_path csv file mapping user_id to user_name
 #' @return a ggplot object
-user_activity_plot <- function(data_dir = 'data',
+#' @export
+plot_user_activity <- function(data_dir = 'data',
                                user_names_path = file.path(data_dir,
                                                            'user_names.csv')) {
 

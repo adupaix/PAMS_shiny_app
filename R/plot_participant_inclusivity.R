@@ -9,10 +9,9 @@
 #' categories, so percentages can sum to more than 100 %.
 #'
 #' NOTE: ggradar::ggradar() expects values between `grid.min` (0) and
-#' `grid.max` (1). The percentages (0-100) are above `grid.max`, so ggradar
-#' divides them by their maximum (with a warning): the outer grid circle
-#' corresponds to the largest percentage, not to 100 %. The exact
-#' percentages are written in the axis labels.
+#' `grid.max` (1), otherwise it divides them by their maximum. Proportions
+#' (0-1) are passed so that the grid circles are true 0 %, 50 % and 100 %;
+#' the percentages are also written in the axis labels.
 #'
 #' @param participant_data data frame with one row per participant group and
 #'   a character column `participant_inclusivity` (";"-separated values)
@@ -30,8 +29,9 @@ plot_participant_inclusivity <- function(participant_data,
     participant_data$participant_inclusivity, categories
   ) / nrow(participant_data)
 
-  # ggradar format: one row per group, first column = group name
-  radar_data <- data.frame(group = 1, as.list(pct_groups),
+  # ggradar format: one row per group, first column = group name; values as
+  # proportions (0-1) to match ggradar's grid (grid.min = 0, grid.max = 1)
+  radar_data <- data.frame(group = 1, as.list(pct_groups / 100),
                            check.names = FALSE)
   names(radar_data) <- c("group",
                          paste0(categories, "\n", round(pct_groups), "%"))

@@ -104,7 +104,7 @@ server <- function(input, output) {
   output$user_activity <- plotly::renderPlotly({
     input$reload_data
 
-    plotly::ggplotly(user_activity_plot(data_dir), tooltip = 'text') |>
+    plotly::ggplotly(plot_user_activity(data_dir), tooltip = 'text') |>
       # ggplotly ignores legend.position: put the legend on top explicitly
       plotly::layout(legend = list(orientation = 'h', x = 0.5,
                                    xanchor = 'center', y = 1.05))
@@ -115,169 +115,41 @@ server <- function(input, output) {
   output$bar_excluded <- plotly::renderPlotly({
     input$reload_data
 
-    p_excluded <- ggplot2::ggplot(exclusion_reasons,
-                                  ggplot2::aes(x = exclude_note,
-                                               y = percent,
-                                               fill = exclude_note)) +
-      ggplot2::geom_col() +
-      ggplot2::geom_text(ggplot2::aes(label = sprintf("%.1f%%", percent)),
-                         position = ggplot2::position_stack(vjust = 0.5)) +
-      ggplot2::coord_flip() +
-      ggplot2::scale_y_continuous(
-        labels = scales::label_percent(scale = 1), limits = c(0, NA)
-      ) +
-      ggplot2::labs(x = "Exclusion reason", y = "Excluded articles (%)") +
-      ggplot2::theme_minimal() +
-      ggplot2::theme(legend.position = "none")
-
-    plotly::ggplotly(p_excluded)
+    plotly::ggplotly(plot_exclusion_reasons(excluded_papers))
   })
   
   # Disciplines
   output$venn_disciplines <- renderPlot({
     input$reload_data
-    
-    disciplines_list <- list(
-      A = grep('Life science & Environment',
-               included_papers$article_discipline),
-      B = grep('Sciences & Technology',
-               included_papers$article_discipline),
-      C = grep('Social Sciences & Humanities',
-               included_papers$article_discipline)
-    )
-    
-    ggVennDiagram::ggVennDiagram(disciplines_list, lwd = 0)+
-      ggplot2::ggtitle(paste0('A: Life science & Environment\n',
-                              'B: Sciences & Technology\n',
-                              'C: Social Sciences & Humanities\n'
-      ))+
-      ggplot2::scale_fill_gradient(low = "#F4FAFE", high = "#4981BF") +
-      ggplot2::theme(legend.position = 'none')
+
+    plot_disciplines_venn(included_papers)
   })
   
   # Authors role
   output$venn_role <- renderPlot({
     input$reload_data
-    
-    venn_leader <- list(
-      Leader = grep('Leader',
-                    included_papers$leader_authors),
-      Participant = grep('Participant',
-                         included_papers$leader_authors),
-      Observer = grep('Observer',
-                      included_papers$leader_authors)
-    )
-    
-    ggVennDiagram::ggVennDiagram(venn_leader, lwd = 0)+
-      ggplot2::scale_fill_gradient(low = "#F4FAFE", high = "#4981BF") +
-      ggplot2::theme(legend.position = 'none')
-    
+
+    plot_authors_role_venn(included_papers)
   })
   
   # Impacts / levers / challenges variables
   output$bar_impacts <- plotly::renderPlotly({
     input$reload_data
-    
-    impact_lever_chal <- dplyr::bind_rows(
-      included_papers |>
-        dplyr::count(impact_evaluation) |>
-        dplyr::rename(value = impact_evaluation) |>
-        dplyr::mutate(var = 'impact_evaluation'),
-      included_papers |>
-        dplyr::count(levers) |>
-        dplyr::rename(value = levers) |>
-        dplyr::mutate(var = 'levers'),
-      included_papers |>
-        dplyr::count(challenges) |>
-        dplyr::rename(value = challenges) |>
-        dplyr::mutate(var = 'challenges')
-    ) |>
-      dplyr::mutate(value_plot = dplyr::case_when(
-        value == 'Detailed' ~ 'Detailed/Evaluated',
-        value == 'Evaluated' ~ 'Detailed/Evaluated',
-        value == 'Mentioned' ~ 'Mentioned/Discussed',
-        value == 'Discussed' ~ 'Mentioned/Discussed',
-        value == 'No' ~ 'No'
-      ))
-    
-    impact_lever_chal |>
-      dplyr::select(var, value, n)
-    
-    p_impacts <- ggplot2::ggplot(impact_lever_chal,
-                                 ggplot2::aes(x = var, y = n,
-                                              fill = value_plot))+
-      ggplot2::geom_bar(stat = 'identity')+
-      ggplot2::scale_fill_discrete('Coded\nvalue',
-                                   palette = 'Blues')+
-      ggplot2::coord_flip()+
-      ggplot2::ylab('Number of articles')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        panel.grid.major = ggplot2::element_line(color = 'grey'),
-        axis.title.y = ggplot2::element_blank())
 
-    plotly::ggplotly(p_impacts)
+    plotly::ggplotly(plot_impacts_levers_challenges(included_papers,
+                                                    as_percent = TRUE))
   })
   
   # Stacked bar plot: number of papers per publication year, coloured by
   # chosen variable
   output$bar_papers_year <- plotly::renderPlotly({
     input$reload_data
+
     req(input$picker_area_var)
-    
-    fill_var <- input$picker_area_var
-    fill_raw <- as.character(included_papers[[fill_var]])
-    
-    if (fill_var %in% c('impact_evaluation', 'levers', 'challenges')) {
-      fill_value <- dplyr::case_when(
-        fill_raw == 'Detailed' ~ 'Detailed/Evaluated',
-        fill_raw == 'Evaluated' ~ 'Detailed/Evaluated',
-        fill_raw == 'Mentioned' ~ 'Mentioned/Discussed',
-        fill_raw == 'Discussed' ~ 'Mentioned/Discussed',
-        TRUE ~ fill_raw
-      )
-      fill_levels <- unique(c(
-        'No', 'Detailed/Evaluated', 'Mentioned/Discussed',
-        sort(unique(stats::na.omit(fill_value)))
-      ))
-      plot_palette <- ggplot2::scale_fill_brewer(
-        names(area_choices)[match(fill_var, area_choices)],
-        palette = 'Blues',
-        drop = FALSE
-      )
-    } else {
-      fill_value <- fill_raw
-      # NOTE: unexpected values are appended to the expected levels instead of
-      # being silently coerced to NA
-      fill_levels <- unique(c(area_levels[[fill_var]],
-                              sort(unique(stats::na.omit(fill_raw)))))
-      plot_palette <- ggplot2::scale_fill_viridis_d(
-        names(area_choices)[match(fill_var, area_choices)],
-        direction = -1
-      )
-    }
-    
-    year_counts <- tibble::tibble(
-      Publication.Year = as.numeric(included_papers$Publication.Year),
-      fill_value = factor(fill_value, levels = fill_levels)
-    ) |>
-      dplyr::filter(!is.na(Publication.Year), !is.na(fill_value)) |>
-      dplyr::count(Publication.Year, fill_value)
 
-    p_papers_year <- ggplot2::ggplot(year_counts,
-                                     ggplot2::aes(x = Publication.Year,
-                                                  y = n,
-                                                  fill = fill_value)) +
-      ggplot2::geom_col(colour = "white", linewidth = 0.2) +
-      ggplot2::scale_x_continuous(breaks = scales::breaks_pretty()) +
-      plot_palette +
-      ggplot2::xlab("Publication year") +
-      ggplot2::ylab("Number of papers") +
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = "white", color = "black"),
-        panel.grid.major = ggplot2::element_line(color = "grey"))
-
-    plotly::ggplotly(p_papers_year)
+    plotly::ggplotly(plot_papers_per_year(
+      included_papers, fill_var = input$picker_area_var
+    ))
   })
   
   ## Engagement objectives plots
@@ -285,86 +157,14 @@ server <- function(input, output) {
   output$bar_engage_large <- plotly::renderPlotly({
     input$reload_data
 
-    objective_list <- lapply(strsplit(included_papers$engagement_objectives, ';'),
-                             format_and_correct_objectives)
-    main_objective_categories <- sort(unique(unlist(lapply(lapply(
-      strsplit(unique(unlist(objective_list)),'-'),
-      stringr::str_trim),
-      function(x) x[1]))))
-    # Denominator = included articles with at least one objective coded
-    # (one article can have several objectives, so % may sum to > 100 %)
-    n_coded_objectives <- sum(vapply(
-      objective_list, function(x) any(!is.na(x) & x != ""), logical(1)
-    ))
-    main_objectives_df <- data.frame(objective = main_objective_categories) |>
-      dplyr::mutate(nb_articles = sapply(main_objective_categories,
-                                         function(x) length(grep(x,objective_list))),
-                    percent = 100 * nb_articles / n_coded_objectives)
-
-
-    # objectives sorted by number of articles (most numerous on top);
-    # fill uses the unsorted column so that colours stay the same
-    p_engage_large <- ggplot2::ggplot(main_objectives_df,
-                                      ggplot2::aes(x = reorder(objective,
-                                                               nb_articles),
-                                                   y = percent,
-                                                   fill = objective))+
-      ggplot2::geom_bar(stat='identity')+
-      ggplot2::scale_fill_brewer(palette = 'Set1')+
-      ggplot2::scale_y_continuous(
-        labels = scales::label_percent(scale = 1), limits = c(0, NA)
-      )+
-      ggplot2::coord_flip()+
-      ggplot2::xlab('Engagement objective')+
-      ggplot2::ylab('Coded articles (%)')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        legend.position = 'none',
-        panel.grid.major = ggplot2::element_line(color = 'grey'))
-
-    plotly::ggplotly(p_engage_large)
+    plotly::ggplotly(plot_engagement_objectives_broad(included_papers))
   })
   
   #b. plot with detailed categories
   output$bar_engage_detail <- plotly::renderPlotly({
     input$reload_data
-    
-    objective_list <- lapply(strsplit(included_papers$engagement_objectives, ';'),
-                             format_and_correct_objectives)
-    
-    objective_categories <- sort(unique(unlist(objective_list)))
-    objectives_df <- data.frame(objective = objective_categories,
-                                main_objectives = sapply(strsplit(objective_categories,'-'),
-                                                         function(x) x[1])) |>
-      dplyr::mutate(nb_articles = sapply(objective_categories,
-                                         function(x) length(grep(x,objective_list))))
-    # Denominator = included articles with at least one objective coded
-    # (one article can have several objectives, so % may sum to > 100 %)
-    n_coded_objectives <- sum(vapply(
-      objective_list, function(x) any(!is.na(x) & x != ""), logical(1)
-    ))
-    objectives_df <- objectives_df |>
-      dplyr::mutate(percent = 100 * nb_articles / n_coded_objectives)
 
-    p_engage_detail <- ggplot2::ggplot(objectives_df,
-                                       ggplot2::aes(x = objective,
-                                                    y = percent,
-                                                    fill = main_objectives))+
-      ggplot2::geom_bar(stat='identity')+
-      ggplot2::scale_fill_brewer(palette = 'Set1')+
-      ggplot2::scale_y_continuous(
-        labels = scales::label_percent(scale = 1), limits = c(0, NA)
-      )+
-      ggplot2::coord_flip()+
-      ggplot2::scale_x_discrete(limits=rev)+
-      ggplot2::xlab('Engagement objective')+
-      ggplot2::ylab('Coded articles (%)')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        legend.position = 'none',
-        panel.grid.major = ggplot2::element_line(color = 'grey'))
-
-    plotly::ggplotly(p_engage_detail)
+    plotly::ggplotly(plot_engagement_objectives_detailed(included_papers))
   })
   
   # Venn diagram of ecosystems
