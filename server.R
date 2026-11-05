@@ -291,21 +291,32 @@ server <- function(input, output) {
       strsplit(unique(unlist(objective_list)),'-'),
       stringr::str_trim),
       function(x) x[1]))))
+    # Denominator = included articles with at least one objective coded
+    # (one article can have several objectives, so % may sum to > 100 %)
+    n_coded_objectives <- sum(vapply(
+      objective_list, function(x) any(!is.na(x) & x != ""), logical(1)
+    ))
     main_objectives_df <- data.frame(objective = main_objective_categories) |>
       dplyr::mutate(nb_articles = sapply(main_objective_categories,
-                                         function(x) length(grep(x,objective_list))))
+                                         function(x) length(grep(x,objective_list))),
+                    percent = 100 * nb_articles / n_coded_objectives)
 
 
+    # objectives sorted by number of articles (most numerous on top);
+    # fill uses the unsorted column so that colours stay the same
     p_engage_large <- ggplot2::ggplot(main_objectives_df,
-                                      ggplot2::aes(x = objective,
-                                                   y = nb_articles,
+                                      ggplot2::aes(x = reorder(objective,
+                                                               nb_articles),
+                                                   y = percent,
                                                    fill = objective))+
       ggplot2::geom_bar(stat='identity')+
       ggplot2::scale_fill_brewer(palette = 'Set1')+
+      ggplot2::scale_y_continuous(
+        labels = scales::label_percent(scale = 1), limits = c(0, NA)
+      )+
       ggplot2::coord_flip()+
-      ggplot2::scale_x_discrete(limits=rev)+
       ggplot2::xlab('Engagement objective')+
-      ggplot2::ylab('Number of articles')+
+      ggplot2::ylab('Coded articles (%)')+
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         legend.position = 'none',
@@ -327,17 +338,27 @@ server <- function(input, output) {
                                                          function(x) x[1])) |>
       dplyr::mutate(nb_articles = sapply(objective_categories,
                                          function(x) length(grep(x,objective_list))))
-    
+    # Denominator = included articles with at least one objective coded
+    # (one article can have several objectives, so % may sum to > 100 %)
+    n_coded_objectives <- sum(vapply(
+      objective_list, function(x) any(!is.na(x) & x != ""), logical(1)
+    ))
+    objectives_df <- objectives_df |>
+      dplyr::mutate(percent = 100 * nb_articles / n_coded_objectives)
+
     p_engage_detail <- ggplot2::ggplot(objectives_df,
                                        ggplot2::aes(x = objective,
-                                                    y = nb_articles,
+                                                    y = percent,
                                                     fill = main_objectives))+
       ggplot2::geom_bar(stat='identity')+
       ggplot2::scale_fill_brewer(palette = 'Set1')+
+      ggplot2::scale_y_continuous(
+        labels = scales::label_percent(scale = 1), limits = c(0, NA)
+      )+
       ggplot2::coord_flip()+
       ggplot2::scale_x_discrete(limits=rev)+
       ggplot2::xlab('Engagement objective')+
-      ggplot2::ylab('Number of articles')+
+      ggplot2::ylab('Coded articles (%)')+
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         legend.position = 'none',
@@ -593,7 +614,7 @@ server <- function(input, output) {
     part_type_categories <- data.frame(category = sort(c(
       "General public", "Art & culture sector", "Education sector",
       "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Decision makers",
+      "Other industries", "Decision makers\n and managers",
       "NGOs", "Science & research", "Others", "Unclear"
     ))) |>
       dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~
@@ -618,7 +639,7 @@ server <- function(input, output) {
       ggplot2::scale_fill_manual('', values = c(Known = "#08519C",
                                                 Other = 'grey'))+
       ggplot2::xlab('Participant type')+
-      ggplot2::ylab('Number of coding units')+
+      ggplot2::ylab('Number of participant groups')+
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'),
@@ -631,12 +652,22 @@ server <- function(input, output) {
   output$bar_step_involvement <- plotly::renderPlotly({
     input$reload_data
     
+    # Coding unit = case study x research step x involvement level: several
+    # participant types/groups with the same step and level count once.
+    # Steps and levels are not linked in the coding book, so a participant
+    # group with several steps and several levels contributes every pair.
     developed_data <- participant_data |>
       dplyr::filter(involvement_level != 'No implication') |>
-      dplyr::select(participant_type, research_step, involvement_level) |>
+      dplyr::select(article_id, user_id, case_study_index,
+                    participant_type, research_step, involvement_level) |>
       split_duplicate_rows(split_col = 'participant_type', sep = ';') |>
+      # filter on participant type BEFORE deduplicating
+      dplyr::filter(participant_type %in% input$picker_part_types) |>
+      # cross step x level within each participant group, then deduplicate
       split_duplicate_rows(split_col = 'research_step', sep = ';') |>
       split_duplicate_rows(split_col = 'involvement_level', sep = ';') |>
+      dplyr::distinct(article_id, user_id, case_study_index,
+                      research_step, involvement_level) |>
       dplyr::mutate(involvement_level = factor(involvement_level,
                                                levels = c(
                                                  'Fully-lead',
@@ -649,16 +680,15 @@ server <- function(input, output) {
                                              'Design', 'Collect',
                                              'Analyze', 'Evaluate',
                                              'Disseminate', 'Unclear'
-                                           ))) |>
-      dplyr::filter(participant_type %in% input$picker_part_types)
-    
+                                           )))
+
     p_step_involvement <- ggplot2::ggplot(developed_data,
                                           ggplot2::aes(x = research_step,
                                                        fill = involvement_level))+
       ggplot2::geom_bar()+
       ggplot2::scale_fill_viridis_d('Involvement level', direction = -1)+
       ggplot2::xlab('Research step')+
-      ggplot2::ylab('Number of coding units')+
+      ggplot2::ylab('Number of case study × involvement level')+
       ggplot2::theme(panel.background = ggplot2::element_rect(
         fill = 'white', color = 'black'),
         panel.grid.major = ggplot2::element_line(color = 'grey'))
@@ -675,7 +705,7 @@ server <- function(input, output) {
     part_type_categories <- data.frame(category = sort(c(
       "General public", "Art & culture sector", "Education sector",
       "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Decision makers",
+      "Other industries", "Decision makers\n and managers",
       "NGOs", "Science & research", "Others", "Unclear"
     ))) |>
       dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~

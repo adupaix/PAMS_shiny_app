@@ -300,7 +300,11 @@ ui <- dashboardPage(
           column(
             width = 8,
             div(
-              box(title = 'Research step and involvement level per participant type',
+              box(title = 'Research step and involvement level',
+                  p("A case study counts once per research step and
+                    involvement level, whatever the number of participant
+                    types selected. A participant group with several steps
+                    and several levels contributes every step × level pair."),
                   fluidRow(
                     column(width = 3,
                            pickerInput(
