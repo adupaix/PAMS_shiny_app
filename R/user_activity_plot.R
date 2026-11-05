@@ -10,7 +10,7 @@
 
 #' Bar plot of the number of articles coded per user
 #'
-#' Input: the raw SysRev parquet exports downloaded by R/load_sysrev_data.R
+#' Input: the raw SysRev parquet exports downloaded by scripts/load_sysrev_data.R
 #' (data_dir/proj_*/user-answers.parquet and labels.parquet). These are used
 #' instead of `user_answers` because sysrev_format_data() keeps only one coder
 #' per article (resolver or fallback), which would under-credit double-coding.

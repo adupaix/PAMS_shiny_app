@@ -33,6 +33,36 @@ split_duplicate_rows <- function(data,
     tidyr::separate_rows(dplyr::all_of(split_col), sep = sep) |>
     # Trim whitespace
     dplyr::mutate(dplyr::across(dplyr::all_of(split_col), stringr::str_trim))
-  
+
   return(data)
+}
+
+#' Count the rows coded with each category of a multi-valued variable
+#'
+#' Splits each value of `x` on `sep`, trims whitespace and counts, for each
+#' category, the number of elements of `x` containing it. Matching is exact:
+#' "Others" does not match "Other industries", and labels containing regex
+#' or escaped characters (e.g. "\\n", "(") are matched literally.
+#'
+#' A row coded twice with the same category counts once; missing (NA) or
+#' empty values count for no category. Values absent from `categories` are
+#' ignored.
+#'
+#' @param x character vector, one element per coding unit (e.g. one
+#'   participant group), with `sep`-separated categories
+#' @param categories character vector of the categories to count
+#' @param sep separator between categories in `x`
+#' @return named integer vector (names = `categories`, same order)
+#' @export
+count_category_occurrences <- function(x, categories, sep = ";") {
+  stopifnot(is.character(categories))
+  x <- as.character(x)
+
+  # unique() so that a category repeated within a row counts once
+  values_per_row <- lapply(strsplit(x, sep, fixed = TRUE),
+                           function(values) unique(trimws(values)))
+  # factor() drops values that are not in `categories` (and NA)
+  counts <- table(factor(unlist(values_per_row), levels = categories))
+
+  stats::setNames(as.integer(counts), categories)
 }

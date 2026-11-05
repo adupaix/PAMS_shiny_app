@@ -14,7 +14,7 @@ server <- function(input, output) {
   observeEvent(input$reload_data, {
 
     reload_data <<- T
-    source('R/load_sysrev_data.R')
+    source('scripts/load_sysrev_data.R')
     reload_data <<- F
 
   })
@@ -608,44 +608,8 @@ server <- function(input, output) {
   # Barplot participant type
   output$bar_part_type <- plotly::renderPlotly({
     input$reload_data
-    
-    part_type_list <- lapply(strsplit(participant_data$participant_type, ';'),
-                             stringr::str_trim)
-    part_type_categories <- data.frame(category = sort(c(
-      "General public", "Art & culture sector", "Education sector",
-      "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Decision makers\n and managers",
-      "NGOs", "Science & research", "Others", "Unclear"
-    ))) |>
-      dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~
-                                               'Other',
-                                             T ~ 'Known'))
-    
-    part_type_df <- data.frame(part_type = part_type_categories$category,
-                               color = part_type_categories$color) |>
-      dplyr::mutate(nb_part_type = sapply(part_type_categories$category,
-                                          function(x) length(grep(x,part_type_list,
-                                                                  fixed = T))))
-    
-    p_part_type <- ggplot2::ggplot(part_type_df,
-                                   ggplot2::aes(x = part_type,
-                                                y = nb_part_type,
-                                                fill = color))+
-      ggplot2::geom_bar(stat = 'identity')+
-      ggplot2::coord_flip()+
-      ggplot2::scale_x_discrete(limits=part_type_categories$category[
-        length(part_type_categories$category):1
-      ])+
-      ggplot2::scale_fill_manual('', values = c(Known = "#08519C",
-                                                Other = 'grey'))+
-      ggplot2::xlab('Participant type')+
-      ggplot2::ylab('Number of participant groups')+
-      ggplot2::theme(panel.background = ggplot2::element_rect(
-        fill = 'white', color = 'black'),
-        panel.grid.major = ggplot2::element_line(color = 'grey'),
-        legend.position = 'none')
 
-    plotly::ggplotly(p_part_type)
+    plotly::ggplotly(plot_participant_types(participant_data))
   })
   
   # Barplot research step and involvement level
@@ -702,16 +666,11 @@ server <- function(input, output) {
     
     part_type_list <- lapply(strsplit(participant_data$participant_type, ';'),
                              stringr::str_trim)
-    part_type_categories <- data.frame(category = sort(c(
-      "General public", "Art & culture sector", "Education sector",
-      "Fisheries sector", "Aquaculture sector", "Energy sector",
-      "Other industries", "Decision makers\n and managers",
-      "NGOs", "Science & research", "Others", "Unclear"
-    ))) |>
-      dplyr::mutate(color = dplyr::case_when(category %in% c('Others', 'Unclear') ~
-                                               'Other',
-                                             T ~ 'Known'))
-    
+    # TODO: convert to a plot function (refactor batch); shared category
+    # list used meanwhile so that the renamed "Decision makers and managers"
+    # label is still matched
+    part_type_categories <- data.frame(category = participant_type_levels)
+
     part_type_iter_df <- data.frame(
       part_type = part_type_categories$category
     ) |>

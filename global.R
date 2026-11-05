@@ -30,9 +30,9 @@ if (!'ggradar' %in% installed.packages()){
 }
 library(ggradar)
 
-# source small functions
-source('R/utils.R')
-source('R/user_activity_plot.R')
+# NOTE: functions and constants in R/ are not sourced here: Shiny sources
+# every R/*.R file automatically after global.R (shiny::loadSupport), so R/
+# must only contain definitions (package-ready)
 
 # Data dir
 data_dir <- 'data'
@@ -71,6 +71,6 @@ area_levels <- list(
 )
 
 # source file that loads and formats sysrev data
-source('R/load_sysrev_data.R')
+source('scripts/load_sysrev_data.R')
 # save the csv file with the date in the name, use API only if the file was
 # not downloaded today or if input on the first tab

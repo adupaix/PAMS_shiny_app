@@ -113,7 +113,7 @@ included_answers <- user_answers |>
   dplyr::mutate(participant_type = stringr::str_replace_all(
     participant_type,
     stringr::fixed("Public authorities, decision makers and managers"),
-    "Decision makers\n and managers"
+    "Decision makers and managers"
   ))
 
 # Automatic correction: habitats
