@@ -32,6 +32,8 @@
 #'   their type (Primary / Secondary / None, used as colour).
 #' - `activity_levels`, `activity_other`: values of `activities_and_uses`
 #'   and the ones drawn in grey.
+#' - `involvement_mode_levels`: values of `involvement_mode` ("Individualy"
+#'   is spelled as coded in SysRev).
 #'
 #' @name categories
 #' @export
@@ -156,3 +158,10 @@ activity_levels <- c(
 #' @rdname categories
 #' @export
 activity_other <- c("None", "Unclear", "Other activities and uses")
+
+#' @rdname categories
+#' @export
+involvement_mode_levels <- c(
+  "Individualy", "Collectively - Focus group", "Collectively - Multi-actor",
+  "Collectively - Unclear", "Unclear", "In-person", "Hybrid", "Remote"
+)
