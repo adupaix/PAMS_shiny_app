@@ -259,7 +259,9 @@ server <- function(input, output) {
   output$bar_part_type <- plotly::renderPlotly({
     input$reload_data
 
-    plotly::ggplotly(plot_participant_types(participant_data))
+    plotly::ggplotly(plot_participant_types(participant_data,
+                                            as_percent = TRUE),
+                     tooltip = 'text')
   })
   
   # Barplot research step and involvement level

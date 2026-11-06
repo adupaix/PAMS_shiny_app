@@ -6,13 +6,16 @@
 #' participant type, counts the participant groups whose `participant_type`
 #' contains it (exact match, see [count_category_occurrences()]). A group
 #' coded with several types counts once under each, so bars can sum to more
-#' than the number of groups (or to more than 100 %).
+#' than the number of groups (or to more than 100 %). Bars are sorted by
+#' number of participant groups (most numerous on top), with
+#' `other_categories` kept at the bottom.
 #'
 #' @param participant_data data frame with one row per participant group and
 #'   a character column `participant_type` (";"-separated values)
-#' @param categories participant types to plot, in display order (top to
-#'   bottom)
-#' @param other_categories categories drawn in grey instead of blue
+#' @param categories participant types to plot (ties in the number of
+#'   participant groups keep this order)
+#' @param other_categories categories drawn in grey instead of blue, at the
+#'   bottom of the plot
 #' @param as_percent if `TRUE`, plot the percentage of participant groups
 #'   with at least one participant type coded (groups with a missing
 #'   `participant_type` are excluded from the denominator); if `FALSE`, plot
@@ -49,20 +52,33 @@ plot_participant_types <- function(participant_data,
       labels = scales::label_percent(scale = 1), limits = c(0, NA)
     )
     y_label <- "Participant groups (%)"
+    part_type_df$tooltip <- sprintf("%s: %d groups (%.1f %%)",
+                                    part_type_df$part_type,
+                                    part_type_df$nb_part_type,
+                                    part_type_df$value)
   } else {
     part_type_df$value <- part_type_df$nb_part_type
     y_scale <- NULL
     y_label <- "Number of participant groups"
+    part_type_df$tooltip <- sprintf("%s: %d groups", part_type_df$part_type,
+                                    part_type_df$nb_part_type)
   }
 
+  # Display order: most numerous first, other categories last (order() is
+  # stable, so ties keep the order of `categories`)
+  display_order <- part_type_df$part_type[order(
+    part_type_df$color == "Other", -part_type_df$nb_part_type
+  )]
+
   # coord_flip() draws the first level at the bottom: reverse the limits so
-  # that `categories` reads top to bottom
+  # that `display_order` reads top to bottom. The `text` aesthetic is only
+  # used as tooltip by plotly::ggplotly(tooltip = "text")
   ggplot2::ggplot(part_type_df,
                   ggplot2::aes(x = .data$part_type, y = .data$value,
-                               fill = .data$color)) +
+                               fill = .data$color, text = .data$tooltip)) +
     ggplot2::geom_col() +
     ggplot2::coord_flip() +
-    ggplot2::scale_x_discrete(limits = rev(categories),
+    ggplot2::scale_x_discrete(limits = rev(display_order),
                               labels = scales::label_wrap(label_width)) +
     y_scale +
     ggplot2::scale_fill_manual("", values = c(Known = "#08519C",
