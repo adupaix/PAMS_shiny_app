@@ -166,6 +166,13 @@ server <- function(input, output) {
 
     plotly::ggplotly(plot_engagement_objectives_detailed(included_papers))
   })
+
+  # c. co-occurrence network of the detailed categories (circle layout)
+  output$network_engage <- renderPlot({
+    input$reload_data
+
+    plot_objectives_network(included_papers, layout = "circle")
+  })
   
   # Venn diagram of ecosystems
   output$venn_ecosystem <- renderPlot({

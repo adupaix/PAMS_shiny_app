@@ -41,6 +41,7 @@ ui <- dashboardPage(
       menuItem("Users activity", tabName = "tab_users", icon = icon("user")),
       # Meta-data, results at the scale of the articles
       menuItem("Article-level variables", tabName = "tab_articles", icon = icon("chart-pie")),
+      menuItem("Engagement objectives", tabName = "tab_objectives", icon = icon("bullseye")),
       menuItem("Location and ecosystems", tabName = "tab_ecosystem", icon = icon("map")),
       menuItem("Case-study-level variables", tabName = "tab_case_study", icon = icon("chart-bar")),
       menuItem("Participants-level variables", tabName = "tab_participants", icon = icon("users")),
@@ -157,47 +158,51 @@ ui <- dashboardPage(
                   width = 12)
             )
             
-            
+
           )
-        ),
-        ## Fourth row ----
-        fluidRow(
-          box(title = "Engagement objectives",
-              
-              fluidRow(
-                column(width = 3,
-                       tags$div(
-                         p(strong("Definitions:"),
-                           tags$ul(
-                             tags$li(strong("Implementation:"),
-                                     "Increase of acceptance and legitimacy of the process outcomes."),
-                             tags$li(strong("None:"),
-                                     "The authors explicitly state that there was initially no objectives for involving stakeholders."),
-                             tags$li(strong("Normative:"),
-                                     "Democratic principle that those affected should have a say."),
-                             tags$li(strong("Social learning:"),
-                                     "Stimulating new behaviors, attitudes, and/or emotional reactions."),
-                             tags$li(strong("Substantive:"),
-                                     "Improvement of the quality of research."),
-                             tags$li(strong("Unclear:"),
-                                     "Objectives are not stated or are not clearly stated.")
-                           ),
-                           p('Percentages on the following graphs can sum to more than 100 % since one article can have several engagement objectives.')
-                           ))
-                ),
-                column(width = 9,
-                       div(style = 'margin-bottom = 20px;',
-                         plotly::plotlyOutput("bar_engage_large")),
-                       div(
-                         plotly::plotlyOutput("bar_engage_detail")
-                       )
-                )
-              ),
-              
-              width = 12)
         )
       ),
-      # ---- TAB 2: Ecosystems and location ----
+      # ---- TAB 2: Engagement objectives ----
+      tabItem(
+        tabName = 'tab_objectives',
+        ## First row ----
+        fluidRow(
+          box(title = "Definitions",
+              tags$ul(
+                tags$li(strong("Implementation:"),
+                        "Increase of acceptance and legitimacy of the process outcomes."),
+                tags$li(strong("None:"),
+                        "The authors explicitly state that there was initially no objectives for involving stakeholders."),
+                tags$li(strong("Normative:"),
+                        "Democratic principle that those affected should have a say."),
+                tags$li(strong("Requirement:"),
+                        "Imposed on the researchers."),
+                tags$li(strong("Social learning:"),
+                        "Stimulating new behaviors, attitudes, and/or emotional reactions."),
+                tags$li(strong("Substantive:"),
+                        "Improvement of the quality of research."),
+                tags$li(strong("Unclear:"),
+                        "Objectives are not stated or are not clearly stated.")
+              ),
+              p('Percentages on the bar plots can sum to more than 100 % since one article can have several engagement objectives.'),
+              width = 3),
+          box(title = "Detailed categories",
+              plotly::plotlyOutput("bar_engage_detail"),
+              width = 9)
+        ),
+        ## Second row ----
+        fluidRow(
+          box(title = "Broad categories",
+              plotly::plotlyOutput("bar_engage_large", height = "500px"),
+              width = 6),
+          box(title = "Co-occurence of the engagement objectives",
+              # static plot: ggplotly() renders the size/linewidth legends
+              # of the network poorly
+              plotOutput("network_engage", height = "500px"),
+              width = 6)
+        )
+      ),
+      # ---- TAB 3: Ecosystems and location ----
       tabItem(
         tabName = 'tab_ecosystem',
         ## First row ----
@@ -248,7 +253,7 @@ ui <- dashboardPage(
               width = 6)
         )
       ),
-      # ---- TAB 3: Case study level variables ----
+      # ---- TAB 4: Case study level variables ----
       tabItem(
         tabName = 'tab_case_study',
         ## First row ----
@@ -271,7 +276,7 @@ ui <- dashboardPage(
           )
         )
       ),
-      # ---- TAB 4: Participant type level variables ----
+      # ---- TAB 5: Participant type level variables ----
       tabItem(
         tabName = 'tab_participants',
         ## First row ----
