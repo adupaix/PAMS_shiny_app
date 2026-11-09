@@ -8,10 +8,10 @@
 #'#***************************************************************************
 
 if(reload_data ||
-   !file.exists(file.path('data',
+   !file.exists(file.path(data_dir,
                           paste0(Sys.Date(), '-user_answers.csv')))){
-  
-  file.remove(list.files('data', pattern = '-user_answers.csv',
+
+  file.remove(list.files(data_dir, pattern = '-user_answers.csv',
                          full.names = TRUE))
   
   project_ids <- as.numeric(
@@ -73,20 +73,7 @@ n_coding <- nrow(answers_per_paper)
 n_included <- nrow(included_papers)
 n_excluded <- nrow(excluded_papers)
 
-# get exclusion reasons
-# (one article can have several ';'-separated reasons, so percentages are
-# relative to the number of excluded articles and may sum to > 100 %)
-# NOTE: NA reasons are kept on purpose so that missing exclude_note values
-# stay visible in the app
-exclusion_reasons <- excluded_papers |>
-  dplyr::select(project_id, article_id, exclude_note) |>
-  tidyr::separate_rows(exclude_note, sep = ";") |>
-  dplyr::mutate(exclude_note = stringr::str_trim(exclude_note)) |>
-  dplyr::filter(is.na(exclude_note) | exclude_note != "") |>
-  dplyr::distinct(project_id, article_id, exclude_note) |>
-  dplyr::count(exclude_note, name = "n_articles") |>
-  dplyr::mutate(percent = 100 * n_articles / nrow(excluded_papers))
-
+# exclusion reasons are computed in R/plot_exclusion_reasons.R
 
 # Automatic correction: impact/lever/challenges
 included_papers$impact_evaluation[
@@ -113,7 +100,7 @@ included_answers <- user_answers |>
   dplyr::mutate(participant_type = stringr::str_replace_all(
     participant_type,
     stringr::fixed("Public authorities, decision makers and managers"),
-    "Decision makers"
+    "Decision makers and managers"
   ))
 
 # Automatic correction: habitats
