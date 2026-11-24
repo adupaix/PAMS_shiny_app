@@ -52,9 +52,20 @@ if(reload_data ||
     
 }
 
-# read formatted data
+# read formatted data, apply the coding corrections (R/pams_data_correction.R,
+# sourced explicitly as R/ is only auto-sourced by Shiny after global.R) and
+# save the cleaned data
+source('R/pams_data_correction.R')
+file.remove(list.files(data_dir, pattern = '-user_answers-cleaned\\.csv$',
+                       full.names = TRUE))
 user_answers <- utils::read.csv(file.path(data_dir,
                                           paste0(Sys.Date(), '-user_answers.csv'))) |>
+  pams_data_correction(land_sea_harmonization = TRUE)
+utils::write.csv(user_answers,
+                 file = file.path(data_dir,
+                                  paste0(Sys.Date(), '-user_answers-cleaned.csv')),
+                 row.names = F)
+user_answers <- user_answers |>
   dplyr::mutate(include_code = as.logical(include_code))
 
 # get simplified df with per article information

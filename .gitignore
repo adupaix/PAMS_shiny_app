@@ -51,6 +51,7 @@ rsconnect/
 # data downloaded from sysrev
 data/proj*
 data/*-user_answers.csv
+data/*-user_answers-cleaned.csv
 
 # ignore agents
 .github/agents/*
